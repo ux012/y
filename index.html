@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>신술개전 神術開戰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0805;
+  --deep: #100c08;
+  --gold: #c9a84c;
+  --gold-dim: #8a6f2e;
+  --red: #8b1a1a;
+  --red-bright: #c0392b;
+  --paper: #1a1410;
+  --text: #d4c4a0;
+  --text-dim: #8a7a5e;
+  --border: rgba(201,168,76,0.2);
+  --border-bright: rgba(201,168,76,0.5);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--black);
+  color:var(--text);
+  font-family:'Noto Serif KR',serif;
+  overflow-x:hidden;
+}
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:1000;
+  opacity:0.4;
+}
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--black); }
+::-webkit-scrollbar-thumb { background:var(--gold-dim); }
+
+nav {
+  position:fixed;
+  top:0; width:100%;
+  z-index:100;
+  padding:1.2rem 3rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:linear-gradient(to bottom,rgba(10,8,5,0.95),transparent);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo { font-size:1.3rem; font-weight:900; color:var(--gold); letter-spacing:0.3em; text-shadow:0 0 20px rgba(201,168,76,0.4); }
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a { color:var(--text-dim); text-decoration:none; font-size:0.85rem; letter-spacing:0.15em; transition:color 0.3s; font-family:'Noto Sans KR',sans-serif; }
+.nav-links a:hover { color:var(--gold); }
+
+.hero {
+  height:100vh;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  position:relative; overflow:hidden;
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(139,26,26,0.15) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 30%,rgba(201,168,76,0.08) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 80%,rgba(139,26,26,0.1) 0%,transparent 40%);
+}
+.hero-content { text-align:center; position:relative; z-index:1; }
+.hero-subtitle { font-size:0.8rem; letter-spacing:0.5em; color:var(--gold-dim); margin-bottom:1.5rem; font-family:'Noto Sans KR',sans-serif; animation:fadeUp 1s ease forwards; opacity:0; }
+.hero-title { font-size:clamp(4rem,10vw,9rem); font-weight:900; color:var(--gold); line-height:0.9; text-shadow:0 0 40px rgba(201,168,76,0.3),0 0 80px rgba(201,168,76,0.1); animation:fadeUp 1s 0.2s ease forwards; opacity:0; letter-spacing:0.05em; }
+.hero-title-sub { font-size:clamp(1rem,2.5vw,1.8rem); color:var(--red-bright); letter-spacing:0.4em; margin-top:0.5rem; animation:fadeUp 1s 0.4s ease forwards; opacity:0; }
+.hero-desc { margin-top:2rem; font-size:0.9rem; color:var(--text-dim); letter-spacing:0.1em; line-height:2; animation:fadeUp 1s 0.6s ease forwards; opacity:0; font-family:'Noto Sans KR',sans-serif; }
+.hero-divider { width:1px; height:80px; background:linear-gradient(to bottom,var(--gold),transparent); margin:2.5rem auto 0; animation:fadeUp 1s 0.8s ease forwards; opacity:0; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+section { padding:8rem 2rem; max-width:1200px; margin:0 auto; }
+.section-header { text-align:center; margin-bottom:5rem; }
+.section-label { font-size:0.7rem; letter-spacing:0.5em; color:var(--gold-dim); font-family:'Noto Sans KR',sans-serif; margin-bottom:0.8rem; }
+.section-title { font-size:clamp(2rem,4vw,3.5rem); font-weight:900; color:var(--gold); letter-spacing:0.1em; }
+.section-divider { width:60px; height:1px; background:var(--gold-dim); margin:1.5rem auto; }
+
+#world { border-top:1px solid var(--border); }
+.world-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; }
+.world-card {
+  background:linear-gradient(135deg,rgba(26,20,16,0.8),rgba(16,12,8,0.9));
+  border:1px solid var(--border);
+  padding:2.5rem; position:relative; transition:border-color 0.3s,transform 0.3s; overflow:hidden;
+}
+.world-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(to bottom,var(--gold),var(--red)); opacity:0; transition:opacity 0.3s; }
+.world-card:hover { border-color:var(--border-bright); transform:translateY(-3px); }
+.world-card:hover::before { opacity:1; }
+.world-card-icon { font-size:2rem; margin-bottom:1rem; display:block; }
+.world-card-title { font-size:1.2rem; color:var(--gold); margin-bottom:1rem; letter-spacing:0.1em; }
+.world-card-text { font-size:0.85rem; color:var(--text-dim); line-height:2; font-family:'Noto Sans KR',sans-serif; }
+
+.sal-grades { display:flex; flex-direction:column; gap:1rem; margin-top:3rem; }
+.sal-grade { display:flex; align-items:center; gap:2rem; padding:1.2rem 2rem; border:1px solid var(--border); background:rgba(16,12,8,0.5); transition:all 0.3s; }
+.sal-grade:hover { border-color:var(--border-bright); background:rgba(26,20,16,0.8); }
+.sal-grade-rank { font-size:1.8rem; font-weight:900; color:var(--red-bright); min-width:60px; text-align:center; }
+.sal-grade-info h4 { color:var(--gold); font-size:0.9rem; margin-bottom:0.3rem; letter-spacing:0.1em; }
+.sal-grade-info p { color:var(--text-dim); font-size:0.8rem; font-family:'Noto Sans KR',sans-serif; }
+
+.heungmaek-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:3rem; }
+.heungmaek-card { text-align:center; padding:2.5rem 1rem; border:1px solid var(--border); background:rgba(16,12,8,0.5); position:relative; overflow:hidden; transition:all 0.3s; }
+.heungmaek-card::after { content:''; position:absolute; bottom:0; left:0; width:100%; height:2px; background:linear-gradient(to right,var(--red),var(--gold)); transform:scaleX(0); transition:transform 0.3s; }
+.heungmaek-card:hover::after { transform:scaleX(1); }
+.heungmaek-card:hover { border-color:var(--border-bright); background:rgba(26,20,16,0.8); }
+.heungmaek-location { font-size:1.3rem; font-weight:900; color:var(--gold); margin-bottom:0.5rem; }
+.heungmaek-sin { font-size:0.8rem; color:var(--red-bright); letter-spacing:0.2em; font-family:'Noto Sans KR',sans-serif; }
+
+#factions { border-top:1px solid var(--border); }
+.faction-tabs { display:flex; gap:0; margin-bottom:3rem; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+.faction-tab { padding:1rem 2rem; background:none; border:none; color:var(--text-dim); font-family:'Noto Serif KR',serif; font-size:0.9rem; cursor:pointer; letter-spacing:0.1em; transition:all 0.3s; border-bottom:2px solid transparent; margin-bottom:-1px; }
+.faction-tab:hover { color:var(--gold); }
+.faction-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+.faction-content { display:none; }
+.faction-content.active { display:block; }
+.faction-info { display:grid; grid-template-columns:1fr 2fr; gap:4rem; align-items:start; }
+.faction-name-block h2 { font-size:2.5rem; font-weight:900; color:var(--gold); line-height:1; margin-bottom:0.5rem; }
+.faction-name-block .faction-type { font-size:0.75rem; color:var(--red-bright); letter-spacing:0.3em; font-family:'Noto Sans KR',sans-serif; }
+.faction-desc { font-size:0.9rem; color:var(--text-dim); line-height:2.2; font-family:'Noto Sans KR',sans-serif; border-left:1px solid var(--border); padding-left:2rem; }
+.faction-tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1.5rem; }
+.faction-tag { padding:0.3rem 0.8rem; border:1px solid var(--border); font-size:0.7rem; color:var(--text-dim); letter-spacing:0.1em; font-family:'Noto Sans KR',sans-serif; }
+
+#characters { border-top:1px solid var(--border); max-width:100%; padding:8rem 4rem; }
+.char-filter { display:flex; gap:1rem; justify-content:center; margin-bottom:4rem; flex-wrap:wrap; }
+.char-filter-btn { padding:0.5rem 1.5rem; background:none; border:1px solid var(--border); color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; font-size:0.8rem; cursor:pointer; letter-spacing:0.1em; transition:all 0.3s; }
+.char-filter-btn:hover,.char-filter-btn.active { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.05); }
+.char-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; max-width:1400px; margin:0 auto; }
+.char-card { background:linear-gradient(135deg,rgba(26,20,16,0.9),rgba(16,12,8,0.95)); border:1px solid var(--border); overflow:hidden; transition:all 0.4s; cursor:pointer; position:relative; }
+.char-card:hover { border-color:var(--border-bright); transform:translateY(-5px); box-shadow:0 20px 40px rgba(0,0,0,0.5),0 0 20px rgba(201,168,76,0.05); }
+.char-img-placeholder { width:100%; aspect-ratio:1216/832; background:linear-gradient(135deg,rgba(26,20,16,1),rgba(16,12,8,1)); display:flex; align-items:center; justify-content:center; font-size:3rem; color:rgba(201,168,76,0.1); position:relative; overflow:hidden; }
+.char-img-placeholder img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; }
+.char-img-placeholder::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 50%,rgba(10,8,5,0.9) 100%); pointer-events:none; }
+.char-img-placeholder .char-symbol { position:relative; z-index:1; }
+.char-info { padding:1.5rem; }
+.char-name { font-size:1.3rem; font-weight:700; color:var(--gold); letter-spacing:0.05em; margin-bottom:0.3rem; }
+.char-meta { font-size:0.75rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; margin-bottom:0.8rem; }
+.char-faction { display:inline-block; padding:0.2rem 0.6rem; border:1px solid var(--border); font-size:0.65rem; color:var(--red-bright); letter-spacing:0.1em; font-family:'Noto Sans KR',sans-serif; margin-bottom:0.8rem; }
+.char-traits { display:flex; flex-wrap:wrap; gap:0.3rem; }
+.char-trait { font-size:0.65rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; }
+.char-trait::after { content:' · '; }
+.char-trait:last-child::after { content:''; }
+.char-quote { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); font-size:0.75rem; color:var(--text-dim); font-style:italic; line-height:1.8; font-family:'Noto Sans KR',sans-serif; }
+
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,8,5,0.95); z-index:500; overflow-y:auto; backdrop-filter:blur(10px); }
+.modal-overlay.active { display:block; }
+.modal { max-width:1000px; margin:5rem auto; background:linear-gradient(135deg,rgba(26,20,16,0.99),rgba(16,12,8,0.99)); border:1px solid var(--border-bright); padding:4rem; position:relative; animation:modalIn 0.3s ease; }
+@keyframes modalIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.modal-close { position:absolute; top:2rem; right:2rem; background:none; border:1px solid var(--border); color:var(--text-dim); width:40px; height:40px; cursor:pointer; font-size:1.2rem; transition:all 0.3s; display:flex; align-items:center; justify-content:center; }
+.modal-close:hover { border-color:var(--gold); color:var(--gold); }
+.modal-header { margin-bottom:2rem; padding-bottom:2rem; border-bottom:1px solid var(--border); }
+.modal-name { font-size:3rem; font-weight:900; color:var(--gold); letter-spacing:0.05em; }
+.modal-meta { font-size:0.85rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; margin-top:0.5rem; }
+.modal-img-block { margin-bottom:2rem; }
+.modal-img-block img { width:100%; max-height:400px; object-fit:cover; object-position:center top; border:1px solid var(--border); }
+.modal-body { display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
+.modal-section-title { font-size:0.7rem; letter-spacing:0.3em; color:var(--gold-dim); margin-bottom:1rem; font-family:'Noto Sans KR',sans-serif; }
+.modal-text { font-size:0.85rem; color:var(--text-dim); line-height:2; font-family:'Noto Sans KR',sans-serif; }
+.modal-quote { grid-column:1/-1; padding:1.5rem 2rem; border-left:3px solid var(--gold); background:rgba(201,168,76,0.03); font-size:0.9rem; color:var(--text); font-style:italic; line-height:2; font-family:'Noto Sans KR',sans-serif; }
+.modal-battle { grid-column:1/-1; padding-top:2rem; border-top:1px solid var(--border); }
+.modal-battle-item { display:flex; gap:1rem; margin-bottom:0.8rem; font-size:0.85rem; font-family:'Noto Sans KR',sans-serif; }
+.modal-battle-label { color:var(--gold-dim); min-width:80px; font-size:0.75rem; letter-spacing:0.1em; padding-top:0.1rem; }
+.modal-battle-value { color:var(--text-dim); line-height:1.8; }
+
+#gallery { border-top:1px solid var(--border); max-width:100%; padding:8rem 4rem; }
+.gallery-tabs { display:flex; gap:0; margin-bottom:3rem; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+.gallery-tab { padding:0.8rem 1.5rem; background:none; border:none; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; font-size:0.8rem; cursor:pointer; letter-spacing:0.1em; transition:all 0.3s; border-bottom:2px solid transparent; margin-bottom:-1px; }
+.gallery-tab:hover { color:var(--gold); }
+.gallery-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+.gallery-grid-normal { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; max-width:1400px; margin:0 auto; }
+.gallery-normal-item { aspect-ratio:1216/832; background:rgba(26,20,16,0.8); border:1px solid var(--border); overflow:hidden; position:relative; cursor:pointer; transition:all 0.3s; }
+.gallery-normal-item:hover { border-color:var(--border-bright); }
+.gallery-normal-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+.gallery-normal-item:hover img { transform:scale(1.05); }
+
+/* 신명개방 그리드 — 가로로 긴 이미지 */
+.gallery-grid-domain { display:flex; flex-direction:column; gap:1.5rem; max-width:1400px; margin:0 auto; }
+.gallery-domain-item { width:100%; aspect-ratio:1800/700; background:rgba(26,20,16,0.8); border:1px solid var(--border); overflow:hidden; position:relative; cursor:pointer; transition:all 0.3s; }
+.gallery-domain-item:hover { border-color:var(--border-bright); }
+.gallery-domain-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+.gallery-domain-item:hover img { transform:scale(1.03); }
+
+.gallery-item-inner { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.5rem; }
+.gallery-item-char { font-size:0.85rem; color:var(--gold); font-family:'Noto Serif KR',serif; letter-spacing:0.1em; }
+.gallery-item-type { font-size:0.7rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; }
+.gallery-item-label { position:absolute; bottom:0; left:0; right:0; padding:0.8rem 1rem; background:linear-gradient(to top,rgba(10,8,5,0.95),transparent); font-size:0.7rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; opacity:0; transition:opacity 0.3s; }
+.gallery-normal-item:hover .gallery-item-label,
+.gallery-domain-item:hover .gallery-item-label { opacity:1; }
+.gallery-content { display:none; }
+.gallery-content.active { display:block; }
+
+.lightbox { display:none; position:fixed; inset:0; background:rgba(10,8,5,0.97); z-index:600; align-items:center; justify-content:center; }
+.lightbox.active { display:flex; }
+.lightbox img { max-width:95vw; max-height:90vh; object-fit:contain; }
+.lightbox-close { position:absolute; top:2rem; right:2rem; background:none; border:1px solid var(--border); color:var(--text-dim); width:40px; height:40px; cursor:pointer; font-size:1.2rem; display:flex; align-items:center; justify-content:center; }
+
+footer { border-top:1px solid var(--border); padding:3rem; text-align:center; }
+.footer-logo { font-size:2rem; font-weight:900; color:var(--gold-dim); letter-spacing:0.3em; margin-bottom:1rem; }
+.footer-text { font-size:0.75rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; letter-spacing:0.1em; }
+
+@media(max-width:768px) {
+  nav { padding:1rem; }
+  .nav-links { display:none; }
+  .world-grid { grid-template-columns:1fr; }
+  .heungmaek-grid { grid-template-columns:repeat(2,1fr); }
+  .faction-info { grid-template-columns:1fr; gap:2rem; }
+  .modal-body { grid-template-columns:1fr; }
+  .modal { padding:2rem; margin:2rem 1rem; }
+  #characters,#gallery { padding:6rem 1.5rem; }
+  .gallery-grid-normal { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">신술개전</div>
+  <ul class="nav-links">
+    <li><a href="#world">세계관</a></li>
+    <li><a href="#factions">세력</a></li>
+    <li><a href="#characters">캐릭터</a></li>
+    <li><a href="#gallery">갤러리</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-subtitle">DARK FANTASY · MODERN KOREA</p>
+    <h1 class="hero-title">신술개전</h1>
+    <p class="hero-title-sub">神術開戰</p>
+    <p class="hero-desc">인간의 절망이 살(煞)로 응집되고<br>그 살이 모여 귀(鬼)가 되는 세계</p>
+    <div class="hero-divider"></div>
+  </div>
+</div>
+
+<section id="world">
+  <div class="section-header">
+    <p class="section-label">LORE · 세계관</p>
+    <h2 class="section-title">살귀의 세계</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="world-grid">
+    <div class="world-card"><span class="world-card-icon">煞</span><h3 class="world-card-title">살(煞)이란</h3><p class="world-card-text">인간의 스트레스, 분노, 절망 등 부정적 감정이 응집된 에너지. 현대 한국 사회의 병폐가 낳은 저주의 결정체로, 충분히 쌓이면 의지를 가진 존재로 변한다.</p></div>
+    <div class="world-card"><span class="world-card-icon">鬼</span><h3 class="world-card-title">살귀(煞鬼)</h3><p class="world-card-text">살이 모여 형태를 갖춘 괴물. 4~3급의 본능형 동물 형태부터 특급의 역사적 한(恨)이 응집된 재앙 수준까지, 등급에 따라 위협도가 극명하게 갈린다.</p></div>
+    <div class="world-card"><span class="world-card-icon">神</span><h3 class="world-card-title">신술사(神術師)</h3><p class="world-card-text">살귀를 퇴치하는 이능력자. 맑은 정신 에너지 '신기(神氣)'와 저주받은 무기 '신구(神具)', 그리고 수호신의 능력을 빌리는 '강신(降神)'술을 사용한다.</p></div>
+    <div class="world-card"><span class="world-card-icon">開</span><h3 class="world-card-title">신명개방(神明開放)</h3><p class="world-card-text">궁극의 결계술. 심상 세계를 현실에 강제로 덮어씌워 무속적 룰이 강제되는 절대 영역을 전개한다. 영역 내 규칙 위반 시 즉사.</p></div>
+  </div>
+  <div style="margin-top:5rem;">
+    <h3 style="color:var(--gold);font-size:1.2rem;letter-spacing:0.2em;margin-bottom:2rem;text-align:center;">살귀 등급표</h3>
+    <div class="sal-grades">
+      <div class="sal-grade"><div class="sal-grade-rank">特</div><div class="sal-grade-info"><h4>특급</h4><p>역사적 한(恨)이 응집된 재앙. 국가 단위 위협. 현대 병기 완전 무효.</p></div></div>
+      <div class="sal-grade"><div class="sal-grade-rank">1</div><div class="sal-grade-info"><h4>1급</h4><p>고지능. 현대 병기 무효. 신술사 복수 투입 필요.</p></div></div>
+      <div class="sal-grade"><div class="sal-grade-rank">2</div><div class="sal-grade-info"><h4>2급</h4><p>인간형. 집착 언어 중얼거림. 특정 대상이나 장소에 집착.</p></div></div>
+      <div class="sal-grade"><div class="sal-grade-rank">3~4</div><div class="sal-grade-info"><h4>3~4급</h4><p>본능형. 동물 형태. 자정 이후 자동 결계 전개 지역에 출몰.</p></div></div>
+    </div>
+  </div>
+  <div style="margin-top:5rem;">
+    <h3 style="color:var(--gold);font-size:1.2rem;letter-spacing:0.2em;margin-bottom:1rem;text-align:center;">4대 흉맥 (四大凶脈)</h3>
+    <p style="text-align:center;color:var(--text-dim);font-size:0.85rem;font-family:'Noto Sans KR',sans-serif;margin-bottom:2rem;">자정 이후 자동 결계가 전개되며 토벌전이 발생하는 서울의 4개 핵심 구역</p>
+    <div class="heungmaek-grid">
+      <div class="heungmaek-card"><div class="heungmaek-location">노량진</div><div class="heungmaek-sin">절망 · 挫折</div></div>
+      <div class="heungmaek-card"><div class="heungmaek-location">강남역</div><div class="heungmaek-sin">탐욕 · 과로</div></div>
+      <div class="heungmaek-card"><div class="heungmaek-location">여의도</div><div class="heungmaek-sin">파멸 · 破滅</div></div>
+      <div class="heungmaek-card"><div class="heungmaek-location">신림</div><div class="heungmaek-sin">고독 · 孤獨</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="factions">
+  <div class="section-header">
+    <p class="section-label">FACTIONS · 세력</p>
+    <h2 class="section-title">주요 세력</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="faction-tabs">
+    <button class="faction-tab active" onclick="switchFaction('jesalguk',this)">제살국</button>
+    <button class="faction-tab" onclick="switchFaction('dohwa',this)">도화서</button>
+    <button class="faction-tab" onclick="switchFaction('haedong',this)">해동청</button>
+    <button class="faction-tab" onclick="switchFaction('changwi',this)">창귀회</button>
+    <button class="faction-tab" onclick="switchFaction('sipjang',this)">십장생</button>
+    <button class="faction-tab" onclick="switchFaction('neutral',this)">중립</button>
+  </div>
+  <div id="faction-jesalguk" class="faction-content active">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>제살국</h2><p class="faction-type">대한민국 신술사 통제 정부 부처</p><div class="faction-tags"><span class="faction-tag">특수재난대응국 위장</span><span class="faction-tag">전국 살귀 감시</span><span class="faction-tag">신술사 육성·파견</span></div></div>
+      <div class="faction-desc">대한민국의 신술사를 통제하는 정부 공식 부처. 일반인에겐 '특수재난대응국'으로 위장되어 있다. 전국의 살귀를 감시하고 신술사를 육성·파견하여 토벌을 수행한다.<br><br>중앙본부 도화서(서울)와 부산 지부 해동청으로 나뉘며, 3대 신가(풍산류씨·밀양박씨·무령신씨)와의 유착이 심각하다. 내부적으로 '심청프로젝트'라는 어두운 비밀을 품고 있다.</div>
+    </div>
+  </div>
+  <div id="faction-dohwa" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>도화서</h2><p class="faction-type">제살국 중앙본부 · 서울</p><div class="faction-tags"><span class="faction-tag">혈통주의</span><span class="faction-tag">부패한 원로원</span><span class="faction-tag">3대 신가</span></div></div>
+      <div class="faction-desc">제살국의 중앙 본부. 혈통주의와 귀족 문화가 뿌리 깊게 자리한 조직으로, 부패한 원로원이 권력을 독점하고 있다.<br><br>3대 신가(풍산류씨·밀양박씨·무령신씨)와의 유착이 심각하며, 해동청과 예산·권력을 두고 갈등한다.<div class="faction-tags" style="margin-top:1.5rem;"><span class="faction-tag">풍산류씨 — 공간·결계</span><span class="faction-tag">밀양박씨 — 육탄·무구소환</span><span class="faction-tag">무령신씨 — 사령·원혼조종</span></div></div>
+    </div>
+  </div>
+  <div id="faction-haedong" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>해동청</h2><p class="faction-type">제살국 부산 지부</p><div class="faction-tags"><span class="faction-tag">실전파</span><span class="faction-tag">육탄 특화</span><span class="faction-tag">폐공장 기반</span></div></div>
+      <div class="faction-desc">도화서 귀족 문화를 혐오하는 부산 지부. 폐공장을 기반으로 운영되는 거친 실전파 해결사 집단.<br><br>화려한 기교보다 압도적인 육탄 파괴력을 신봉한다. 출신보다 실력과 의리를 중시하며, 예산 차별에도 불구하고 강력한 전투력을 유지한다.</div>
+    </div>
+  </div>
+  <div id="faction-changwi" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>창귀회</h2><p class="faction-type">타락 신술사 테러 조직</p><div class="faction-tags"><span class="faction-tag">테러 조직</span><span class="faction-tag">특급살귀 양성</span><span class="faction-tag">일반인 학살</span></div></div>
+      <div class="faction-desc">타락한 신술사들이 모인 테러 조직. 일반인을 학살하여 그 살(煞)로 특급살귀를 양성하는 것을 목표로 한다.<br><br>리더 기태연을 중심으로 도화서에 대한 깊은 환멸과 세상에 대한 허무주의적 이상을 공유한다. 썩은 세계를 찢어버리려는 나름의 철학을 가진 조직.</div>
+    </div>
+  </div>
+  <div id="faction-sipjang" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>십장생</h2><p class="faction-type">타락한 고대 자연물·요괴</p><div class="faction-tags"><span class="faction-tag">특급 요괴</span><span class="faction-tag">자연재해급</span><span class="faction-tag">인류 멸망</span></div></div>
+      <div class="faction-desc">인간의 탐욕과 환경 오염에 타락한 고대 자연물·요괴. 자연재해급 위력을 지니며 인류 멸망을 획책한다.<br><br>천 년 전 10명이 존재했으나 토벌로 소멸. 현대의 악을 흡수해 진화한 핵심 3명(해·물·산)과 총수만 생존. 창귀회와 협력하여 서울을 제물로 나머지 십장생 부활을 노린다.</div>
+    </div>
+  </div>
+  <div id="faction-neutral" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>황학동<br>지하만물상</h2><p class="faction-type">중립 구역</p><div class="faction-tags"><span class="faction-tag">중립</span><span class="faction-tag">암거래</span><span class="faction-tag">저주받은 사물</span></div></div>
+      <div class="faction-desc">어떤 세력과도 적대하지 않는 중립 구역. 저주받은 사물의 암거래 시장.<br><br>주인 연호가 운영하며, 규칙이 곧 법이다. 이 공간에서 세력 간 충돌은 엄격히 금지되며 위반 시 연호의 저주를 받는다.</div>
+    </div>
+  </div>
+</section>
+
+<section id="characters">
+  <div class="section-header">
+    <p class="section-label">CHARACTERS · 등장인물</p>
+    <h2 class="section-title">등장인물</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="char-filter">
+    <button class="char-filter-btn active" onclick="filterChar('all',this)">전체</button>
+    <button class="char-filter-btn" onclick="filterChar('dohwa',this)">도화서</button>
+    <button class="char-filter-btn" onclick="filterChar('haedong',this)">해동청</button>
+    <button class="char-filter-btn" onclick="filterChar('changwi',this)">창귀회</button>
+    <button class="char-filter-btn" onclick="filterChar('sipjang',this)">십장생</button>
+    <button class="char-filter-btn" onclick="filterChar('neutral',this)">중립·기타</button>
+  </div>
+  <div class="char-grid" id="charGrid">
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('chaechiwon')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/ccw.png" alt="채치원"><span class="char-symbol">採</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 특무관</div>
+        <div class="char-name">채치원</div>
+        <div class="char-meta">38세 · 188cm</div>
+        <div class="char-traits"><span class="char-trait">나태</span><span class="char-trait">염세주의</span><span class="char-trait">만성피로</span><span class="char-trait">츤데레</span></div>
+        <div class="char-quote">"아, 야근수당도 안 주는데. 거기 잡귀, 딱 3초 준다."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('ryujinhae')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/rjh.png" alt="류진해"><span class="char-symbol">柳</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 풍산류씨 · 종1품</div>
+        <div class="char-name">류진해</div>
+        <div class="char-meta">20세 · 183cm</div>
+        <div class="char-traits"><span class="char-trait">얼음장</span><span class="char-trait">오만</span><span class="char-trait">야망</span><span class="char-trait">순애</span></div>
+        <div class="char-quote">"신술사는 도구야. 쓸모를 증명하거나 부러지거나."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('shinhyunseo')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/shs.png" alt="신현서"><span class="char-symbol">申</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 무령신씨 · 종1품</div>
+        <div class="char-name">신현서</div>
+        <div class="char-meta">31세 · 187cm</div>
+        <div class="char-traits"><span class="char-trait">요염</span><span class="char-trait">퇴폐</span><span class="char-trait">가식적 비정함</span><span class="char-trait">비련</span></div>
+        <div class="char-quote">"죽은 것들은 거짓말을 안 해."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('chahakgwi')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/chg.png" alt="차학귀"><span class="char-symbol">車</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 원로원 직속 · 정1품</div>
+        <div class="char-name">차학귀</div>
+        <div class="char-meta">29세 · 182cm</div>
+        <div class="char-traits"><span class="char-trait">다정한 가면</span><span class="char-trait">사디스트</span><span class="char-trait">사냥개</span></div>
+        <div class="char-quote">"예쁘게 잘라줄게."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('bakmansoo')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pms.png" alt="박만수"><span class="char-symbol">朴</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 원로원 수장 · 밀양박씨</div>
+        <div class="char-name">박만수</div>
+        <div class="char-meta">72세 · 흑막</div>
+        <div class="char-traits"><span class="char-trait">광기</span><span class="char-trait">흑막</span><span class="char-trait">영생 집착</span></div>
+        <div class="char-quote">심청프로젝트의 주도자.</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="haedong" onclick="openModal('gangcheoljun')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kcj.png" alt="강철준"><span class="char-symbol">剛</span></div>
+      <div class="char-info">
+        <div class="char-faction">해동청 · 정1품</div>
+        <div class="char-name">강철준</div>
+        <div class="char-meta">45세 · 192cm</div>
+        <div class="char-traits"><span class="char-trait">마초</span><span class="char-trait">깡다구</span><span class="char-trait">의리</span><span class="char-trait">직진</span></div>
+        <div class="char-quote">"주먹으로 온나! 턱주가리 부사줄게!"</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="haedong" onclick="openModal('baktaegun')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/ptg.png" alt="박태건"><span class="char-symbol">爆</span></div>
+      <div class="char-info">
+        <div class="char-faction">해동청 · 밀양박씨 · 종1품</div>
+        <div class="char-name">박태건</div>
+        <div class="char-meta">27세 · 195cm</div>
+        <div class="char-traits"><span class="char-trait">열혈</span><span class="char-trait">반항</span><span class="char-trait">반골</span><span class="char-trait">속정 깊음</span></div>
+        <div class="char-quote">"귀 막아라. 포격 들어간다."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="changwi" onclick="openModal('gitaeyeon')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kty.png" alt="기태연"><span class="char-symbol">奇</span></div>
+      <div class="char-info">
+        <div class="char-faction">창귀회 · 리더 · 前특무관</div>
+        <div class="char-name">기태연</div>
+        <div class="char-meta">43세 · 186cm</div>
+        <div class="char-traits"><span class="char-trait">위선적 다정</span><span class="char-trait">나른한 광기</span><span class="char-trait">내면 허무</span></div>
+        <div class="char-quote">"이 도화지는 한 번 찢어야 해."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="changwi" onclick="openModal('bakjaegak')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pjg.png" alt="박재각"><span class="char-symbol">破</span></div>
+      <div class="char-info">
+        <div class="char-faction">창귀회 · 오른팔 · 前정1품</div>
+        <div class="char-name">박재각</div>
+        <div class="char-meta">41세 · 187cm</div>
+        <div class="char-traits"><span class="char-trait">냉철</span><span class="char-trait">현실주의</span><span class="char-trait">야심</span><span class="char-trait">지략가</span></div>
+        <div class="char-quote">"이 썩은 세상은 힘 있는 자가 지배해야 해."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="neutral" onclick="openModal('seotaehyuk')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/sth.png" alt="서태혁"><span class="char-symbol">煞</span></div>
+      <div class="char-info">
+        <div class="char-faction">소속불명 · 수배범 · 특급</div>
+        <div class="char-name">서태혁</div>
+        <div class="char-meta">24세 · 189cm</div>
+        <div class="char-traits"><span class="char-trait">야수</span><span class="char-trait">불안정</span><span class="char-trait">인간 증오</span><span class="char-trait">애정결핍</span></div>
+        <div class="char-quote">"심연은... 너무 추웠어."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="neutral" onclick="openModal('yeonho')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/yh.png" alt="연호"><span class="char-symbol">緣</span></div>
+      <div class="char-info">
+        <div class="char-faction">황학동 지하만물상</div>
+        <div class="char-name">연호</div>
+        <div class="char-meta">나이불명 · 외형 12세 · 145cm</div>
+        <div class="char-traits"><span class="char-trait">염세</span><span class="char-trait">츤데레</span><span class="char-trait">외로움</span></div>
+        <div class="char-quote">"네 수명이라도 저울에 달아보든가."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="sipjang" onclick="openModal('chongsu')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/tree.png" alt="소나무"><span class="char-symbol">松</span></div>
+      <div class="char-info">
+        <div class="char-faction">십장생 · 총수</div>
+        <div class="char-name">소나무 (松)</div>
+        <div class="char-meta">수령 불명 · 천 년의 한(恨)</div>
+        <div class="char-traits"><span class="char-trait">무언</span><span class="char-trait">침묵</span><span class="char-trait">흑막</span></div>
+        <div class="char-quote">말이 없다. 그 침묵이 더 무섭다.</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="sipjang" onclick="openModal('hae')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/sun.png" alt="해"><span class="char-symbol">日</span></div>
+      <div class="char-info">
+        <div class="char-faction">십장생 · 폭염·가뭄</div>
+        <div class="char-name">해 (日)</div>
+        <div class="char-meta">특급 요괴</div>
+        <div class="char-traits"><span class="char-trait">파괴적</span><span class="char-trait">광기</span></div>
+        <div class="char-quote">"더워? 미쳐야지! 하하하!"</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="sipjang" onclick="openModal('mul')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/water.png" alt="물"><span class="char-symbol">水</span></div>
+      <div class="char-info">
+        <div class="char-faction">십장생 · 홍수·오염</div>
+        <div class="char-name">물 (水)</div>
+        <div class="char-meta">특급 요괴</div>
+        <div class="char-traits"><span class="char-trait">허무</span><span class="char-trait">처절</span></div>
+        <div class="char-quote">"다... 씻어버리자."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="sipjang" onclick="openModal('san')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/mountain.png" alt="산"><span class="char-symbol">山</span></div>
+      <div class="char-info">
+        <div class="char-faction">십장생 · 산사태</div>
+        <div class="char-name">산 (山)</div>
+        <div class="char-meta">특급 요괴</div>
+        <div class="char-traits"><span class="char-trait">무언</span><span class="char-trait">우직</span><span class="char-trait">인간 집착</span></div>
+        <div class="char-quote">인간의 탐욕이 낳은 한을 먹고 태어났다.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 갤러리 -->
+<section id="gallery">
+  <div class="section-header">
+    <p class="section-label">조연 · 신명개방</p>
+    <h2 class="section-title">갤러리</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="gallery-tabs">
+    <button class="gallery-tab active" onclick="switchGallery('normal',this)">조연</button>
+    <button class="gallery-tab" onclick="switchGallery('domain',this)">신명개방</button>
+  </div>
+
+  <!-- 조연 이미지 -->
+  <div id="gallery-normal" class="gallery-content active">
+    <div class="gallery-grid-normal">
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kyg.png" alt="김영감">
+        <div class="gallery-item-label">김영감 · 도화서 의무반장</div>
+      </div>
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/lsw.png" alt="이승우">
+        <div class="gallery-item-label">이승우 · 도화서 행정팀장</div>
+      </div>
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pgr.png" alt="박가람">
+        <div class="gallery-item-label">박가람 · 해동청 정보요원</div>
+      </div>
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pms.png" alt="박만수">
+        <div class="gallery-item-label">박만수 · 도화서 원로원 수장</div>
+      </div>
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/cgh.png" alt="최가호">
+        <div class="gallery-item-label">최가호 · 창귀회 과학자</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 신명개방 이미지 — smgb_[코드].png -->
+  <div id="gallery-domain" class="gallery-content">
+    <div class="gallery-grid-domain">
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/cc_s.png" alt="채치원 신명개방">
+        <div class="gallery-item-label">채치원 · 태초의 숨결: 잿빛 운해</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/rj_s.png" alt="류진해 신명개방">
+        <div class="gallery-item-label">류진해 · 절영: 뒤틀린 거울방</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/sh_s.png" alt="신현서 신명개방">
+        <div class="gallery-item-label">신현서 · 야행: 백귀야행의 거리</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/ch_s.png" alt="차학귀 신명개방">
+        <div class="gallery-item-label">차학귀 · 능지처참: 보이지 않는 거미줄</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kc_s.png" alt="강철준 신명개방">
+        <div class="gallery-item-label">강철준 · 수장: 심해의 무덤</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kt_s.png" alt="기태연 신명개방">
+        <div class="gallery-item-label">기태연 · 만마전: 광대들의 탈놀음</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pj_s.png" alt="박재각 신명개방">
+        <div class="gallery-item-label">박재각 · 흑룡의 둥지: 오염된 바다</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/st_s.png" alt="서태혁 신명개방">
+        <div class="gallery-item-label">서태혁 · 무저갱: 가라앉는 지옥</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/yh_s.png" alt="연호 신명개방">
+        <div class="gallery-item-label">연호 · 만물상: 탐욕의 전당</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pm_s.png" alt="박만수 신명개방">
+        <div class="gallery-item-label">박만수 · 염라전: 생사심판</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">신술개전 神術開戰</div>
+  <p class="footer-text">인간의 절망이 살(煞)로 응집되고, 그 살이 모여 귀(鬼)가 되는 세계</p>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalInner"></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+const BASE = 'https://raw.githubusercontent.com/ux012/y/refs/heads/main/';
+
+const charData = {
+  chaechiwon: {
+    name:'채치원', meta:'38세 · 特務官 · 도화서 · 188cm',
+    img: BASE + 'ccw.png',
+    appearance:'처진 잿빛 눈 / 부스스 흑발 마블펌 / 오버핏 검은 긴 야상, 츄리닝, 삼선 슬리퍼 / 다크서클 / 나른 퇴폐미남 / 마른 잔근육',
+    personality:'나태, 염세주의, 만성피로. 살짝 츤데레. 세상에 지쳐있지만 누구보다 강한 특무관.',
+    secret:'과거 기태연과 함께 인당수 제물의 진실을 알았으나 방관한 죄책감을 품고 있다.',
+    quote:'"아, 야근수당도 안 주는데. 거기 잡귀, 딱 3초 준다. 알아서 소멸해라."',
+    battle:{god:'환웅 (하늘, 바람)',weapon:'흑색곰방대 — 연기로 공간 장악',skill:'청룡의 숨결 (바람)',domain:'[태초의 숨결: 잿빛 운해] — 끝없는 담배 연기와 잿빛 구름 소용돌이. 적은 폐부까지 스며드는 연기에 질식하며, 곰방대 잿가루가 떨어질 때 적 육체도 잿더미처럼 무너진다.'}
+  },
+  ryujinhae: {
+    name:'류진해', meta:'20세 · 從1品 · 도화서 · 풍산류씨 차기 가주 · 183cm',
+    img: BASE + 'rjh.png',
+    appearance:'파란 눈 / 하늘색 머리 / 블랙 수트, 검은 가죽 장갑 / 냉미남 / 탄탄 균형 체형',
+    personality:'얼음장, 오만, 야망, 의외로 순애. 감정을 철저히 억누르는 냉혹한 엘리트.',
+    secret:'가문 비리(인당수 제물 가담)를 역겨워하면서도, 개혁을 위해 스스로 더러운 일에 가담한다.',
+    quote:'"네 감정 따윈 알바 아니다. 신술사는 도구야. 쓸모를 증명하거나 부러지거나 둘 중 하나면 족해."',
+    battle:{god:'현무 (공간, 중력)',weapon:'윤도 — 전통 풍수 나침반, 손 위에 부유',skill:'공간 왜곡 및 중력 압사',domain:'[절영: 뒤틀린 거울방] — 사방이 거울인 무한 공간. 적의 방향감각 역전. 나침반 바늘을 돌려 적의 육체 공간을 어긋나게 해 산산조각 낸다.'}
+  },
+  shinhyunseo: {
+    name:'신현서', meta:'31세 · 從1品 · 도화서 · 무령신씨 차기 가주 · 187cm',
+    img: BASE + 'shs.png',
+    appearance:'적안 / 느슨하게 묶은 장발 흑발 / 검은 두루마기 / 눈 아래 붉은 부적 문양 / 붉은 실방울 귀걸이 / 창백 미남',
+    personality:'요염, 퇴폐, 가식적 비정함. 가문 개혁을 위해 스스로 괴물이 되려는 비련의 천재.',
+    secret:'차기 가주가 되기 위해 친형제 전부를 독살. 그 원혼들을 메인 가드로 부린다. 죽음·노화에 극도의 공포.',
+    quote:'"죽은 것들은 거짓말을 안 해. 그저 명령에 복종할 뿐이지. 너도 저들 사이에 끼워줄까?"',
+    battle:{god:'구미호 (환술, 영혼 흡수)',weapon:'피 묻은 거문고 — 줄을 튕겨 원혼 조종',skill:'여우비 (푸른 여우불 폭격)',domain:'[야행: 백귀야행의 거리] — 붉은 달 뜬 조선 공동묘지. 적 시청각 상실. 무한 재생 원혼 군단에게 산 채로 뜯기는 환상 속 실제 육체 찢김.'}
+  },
+  chahakgwi: {
+    name:'차학귀', meta:'29세 · 正1品 · 도화서 원로원 직속 · 182cm',
+    img: BASE + 'chg.png',
+    appearance:'새까만 눈(동공 큼) / 탈색 금발 댄디컷 / 목에 꿰맨 흉터 / 입술 피어싱 / 열 손가락 은반지 / 명품 가디건, 슬랙스',
+    personality:'다정한 가면을 쓴 사디스트. 도화서의 비밀 암살자이자 사냥개.',
+    secret:'선천적 무통각증. 타인의 고통과 비명을 보며 생존감을 느낀다. 고통이 궁금해 목을 반쯤 긋고 봉합한 흉터.',
+    quote:'"내가 너무 세게 조이면 아프니까 숨 딱 참고 있어봐. 예쁘게 잘라줄게."',
+    battle:{god:'창귀',weapon:'체내 이식 명주실 + 은장도 — 목 흉터 실밥 뜯어 피 묻은 실 뽑아냄',skill:'조사 (피아노 치듯 적 사지 절단)',domain:'[능지처참: 보이지 않는 거미줄] — 피칠한 붉은 실이 얽힌 무한 어둠. 입장 즉시 수만 가닥 실에 포박. 은장도로 직접 치명상 전까지 방어 불가.'}
+  },
+  bakmansoo: {
+    name:'박만수', meta:'72세 · 도화서 원로원 수장 · 밀양박씨 가주',
+    img: BASE + 'pms.png',
+    appearance:'희끗한 백발 / 전통 무속 의복 / 주름지고 위압적인 노인',
+    personality:'광기 어린 흑막. 겉으로는 진혼청의 수호자인 척하나 실제로는 영생과 권력을 위해 조직을 부패시켜왔다.',
+    secret:'심청프로젝트 주도자. 10년마다 신기가 가장 맑은 신술사를 광화문 지하 인당수에 산 채로 수몰시킨다.',
+    quote:'"서울을 지킨다"는 명분 아래 서울을 먹어왔다.',
+    battle:{god:'염라대왕 (생사판관)',weapon:'생사부 + 붓 — 죄업 폭로, 행동 봉쇄',skill:'황천길 (수명 시각화 후 단축)',domain:'[염라전: 생사심판] — 염라전이 현실에 소환. 생사부에 이름이 올라간 적은 죄업에 따라 즉사 판결.'}
+  },
+  gangcheoljun: {
+    name:'강철준', meta:'45세 · 正1品 · 해동청 · 192cm',
+    img: BASE + 'kcj.png',
+    appearance:'호박색 눈 / 탈색 거친 은발 투블럭 스왓컷 / 목~팔 거대 용 문신 / 뺨 흉터 / 근육 거구 / 오버핏 블랙 테크웨어 레인코트',
+    personality:'마초, 깡다구, 의리, 직진남. 경상도 사투리. 서울 엘리트 극혐 실전파.',
+    secret:'고아 출신. 살귀에게 먹힐 뻔한 것을 해동청 선배에게 구조됐다. 해동청이 유일한 가족.',
+    quote:'"마! 수트 입고 폼 잡는 거 역겨버서 못 보겠다. 사내답게 주먹으로 온나! 턱주가리 부사줄게!"',
+    battle:{god:'영노 (무엇이든 잡아먹는 바다 도깨비)',weapon:'피 묻은 거대한 녹슨 닻 + 쇠사슬',skill:'해무 (적 무기와 육체 산화 부식)',domain:'[수장: 심해의 무덤] — 수압 수만 톤의 새까만 심해. 적은 수압에 내장 파열, 물귀신에게 물어뜯김.'}
+  },
+  baktaegun: {
+    name:'박태건', meta:'27세 · 從1品 · 해동청 · 밀양박씨 이단아 · 195cm',
+    img: BASE + 'ptg.png',
+    appearance:'밝은 청록색 눈 / 어두운 피부 / 짧고 거친 붉은 스포티컷 / 한쪽 강철팔 변이 / 크롭 후드, 가슴 체인, 풍선껌',
+    personality:'열혈, 반항, 반골. 신명개방 불가 열등감을 화력으로 극복하려 한다.',
+    secret:'밀양박씨 출신이지만 선천적 신명개방 불가로 하자품 취급받아 가문을 부수고 가출했다.',
+    quote:'"술식? 마법? 지랄하네. 압도적인 화력은 모든 걸 해결한다. 귀 막아라. 포격 들어간다."',
+    battle:{god:'불가사리 (강철 먹는 환수)',weapon:'괴물 이빨 달린 대물저격총 (바주카 변형 가능)',skill:'장갑관통 (신기 압축 결계 무시 탄환)',domain:'신명개방 불가. 궁극기 [신명집중: 파천황] — 불가사리 모든 에너지를 총구에 집중, 적의 신명개방 원거리 폭파.'}
+  },
+  gitaeyeon: {
+    name:'기태연', meta:'43세 · 창귀회 리더 · 前特務官 · 186cm',
+    img: BASE + 'kty.png',
+    appearance:'자안(紫眼) / 적백 투톤 긴 땋은 머리 / 남색 전통 도포 / 뒤통수에 하회탈 / 우아한 전통적 미남',
+    personality:'위선적 다정함과 나른한 광기. 평소엔 우아하고 정중하지만 내면은 깊은 우울과 허무.',
+    secret:'채치원과 함께 인당수 제물의 진실을 알게 된 후, 제물로 지정된 인물을 직접 안락사시키고 도화서를 탈주했다.',
+    quote:'"사람들은 참 이상해. 스스로 지옥을 만들면서 왜 살려달라 발버둥 칠까? 이 도화지는 한 번 찢어야 해."',
+    battle:{god:'십이지신',weapon:'백팔 요괴의 탈 (하회탈, 백정탈 등) — 탈 바꿔쓰며 인격/요괴 능력 변환',skill:'강령술 (탈 바꿔쓰며 군단 소환)',domain:'[만마전: 광대들의 탈놀음] — 기괴한 풍물놀이 울려퍼지는 핏빛 조선 장터. 적은 강제로 광대 역할 부여돼 음악 끝날 때까지 살점 깎으며 춤춰야 한다.'}
+  },
+  bakjaegak: {
+    name:'박재각', meta:'41세 · 창귀회 오른팔 · 前正1品 · 187cm',
+    img: BASE + 'pjg.png',
+    appearance:'처진 황갈색 눈 / 짧은 갈색 머리 / 검은 티, 검은 자켓 / 거친 미남 / 다부진 근육질',
+    personality:'냉철, 비정한 현실주의, 충성 연기, 지략가, 야심. 속정 숨김.',
+    secret:'밀양박씨 서자 출신. 가문 내 멸시를 받았으며 본가 후계자 라인을 몰살하고 가문 비술을 훔쳐 흑화했다.',
+    quote:'"이 썩은 세상은 힘 있는 자가 지배해야 해. 기태연의 이상은 내가 완성한다."',
+    battle:{god:'이무기 (밀양박씨 비술)',weapon:'핏빛 검',skill:'식수(蝕水) — 닿는 모든 것을 부식시키는 검은 물',domain:'[흑룡의 둥지: 오염된 바다] — 사방 검은 부식액 바다. 입장 즉시 술식 차단, 육체 천천히 녹아내림.'}
+  },
+  seotaehyuk: {
+    name:'서태혁', meta:'24세 · 소속불명 수배범 · 살귀-인간 혼혈 · 특급 · 189cm',
+    img: BASE + 'sth.png',
+    appearance:'오드아이 (우측 적안, 좌측 녹안) / 덥수룩 잿빛 울프컷 / 피 묻은 구속복 바지, 붕대만 감은 상의 / 반쪽 얼굴 검은 문양 침식 / 맨발',
+    personality:'야수, 불안정, 편집증, 인간 증오, 애정결핍. 고개 갸웃 습관. 4대 흉맥 근처 숨어지냄.',
+    secret:'10년 전 인당수에 던져진 제물. 저주를 먹고 기어 나온 살아있는 재앙. 도화서 수배범.',
+    quote:'"심연은... 너무 추웠어. 당신들은 왜 날 거기 혼자 버려뒀지? 이제 당신들이 가라앉을 차례야."',
+    battle:{god:'없음 (원혼 자체)',weapon:'인당수의 쇠사슬 — 자신의 살을 뚫고 나오는 구속구',skill:'검은 진흙 (모든 것을 녹이는 맹독살)',domain:'[무저갱: 가라앉는 지옥] — 광화문 지하 인당수 늪 현실 복사. 검은 진흙 차오르며 적 이능력 상실, 늪에 가라앉아 원혼에게 녹음.'}
+  },
+  yeonho: {
+    name:'연호', meta:'나이불명 · 외형 12세 · 황학동 지하만물상 · 145cm / 38kg',
+    img: BASE + 'yh.png',
+    appearance:'황금색 눈 / 부스스 짧은 백발 / 오버핏 빈티지 야상, 반바지, 멜빵, 엽전 목걸이 / 소년 얼굴에 노인의 무심함',
+    personality:'염세, 츤데레. 인간을 비웃으면서도 은밀히 매료된다. 깊은 외로움.',
+    secret:'버려진 골동품들의 한이 모여 태어난 특급 사물(도깨비)의 화신. 자신이 만지는 인간은 저주받아 죽기에 스스로 고립된다.',
+    quote:'"규칙은 규칙이지. 물건 살 돈 없어? 그럼 네 수명이라도 저울에 달아보든가."',
+    battle:{god:'도깨비 (재물, 사물 조종)',weapon:'놋쇠 엽전',skill:'등가교환 — 무작위 특급 저주 물품 소환, 엽전 관통 탄환화',domain:'[만물상: 탐욕의 전당] — 거대 황금 저울 있는 무한 금고. 적의 죄악이 재산보다 무거우면 황금 동상으로 굳음.'}
+  },
+  chongsu: {
+    name:'소나무 (松)', meta:'십장생 총수 · 수령 불명',
+    img: BASE + 'tree.png',
+    appearance:'썩은 거대 소나무. 박힌 10개의 푸른 눈. 천 년의 한이 새겨진 존재.',
+    personality:'무언, 침묵, 음침. 말이 없다. 그 침묵이 더 무섭다.',
+    secret:'창귀회와 협력하여 서울을 제물로 삼아 나머지 십장생을 부활시키려는 흑막.',
+    quote:'침묵.',
+    battle:{god:'없음 (자연물 자체)',weapon:'뿌리 — 대지를 통해 저주 전파',skill:'천년한기 — 검은 기운으로 생명 흡수',domain:'미상'}
+  },
+  hae: {
+    name:'해 (日)', meta:'십장생 · 폭염 · 가뭄',
+    img: BASE + 'sun.png',
+    appearance:'붉게 달아오른 거구. 온몸이 타오르는 균열 피부. 파괴 그 자체.',
+    personality:'파괴적, 광기. 즐거움이 곧 파괴인 존재.',
+    secret:'인간의 탐욕과 환경 오염에 타락한 고대 태양 계열 요괴.',
+    quote:'"더워? 미쳐야지! 하하하!"',
+    battle:{god:'없음 (자연재해 자체)',weapon:'태양열',skill:'폭염 방출',domain:'미상'}
+  },
+  mul: {
+    name:'물 (水)', meta:'십장생 · 홍수 · 오염',
+    img: BASE + 'water.png',
+    appearance:'창백한 피부. 처절한 사내. 긴 머리칼(물). 오염된 검은 물로 이루어진 존재.',
+    personality:'허무. 춤추면 한강이 범람하고 도시가 수몰된다.',
+    secret:'인간의 환경 오염에 타락한 고대 수신 계열 요괴.',
+    quote:'"다... 씻어버리자."',
+    battle:{god:'없음 (자연재해 자체)',weapon:'오염된 홍수',skill:'한강 범람 — 도시 수몰',domain:'미상'}
+  },
+  san: {
+    name:'산 (山)', meta:'십장생 · 산사태',
+    img: BASE + 'mountain.png',
+    appearance:'거대 타락 바위 거인. 몸 곳곳에 아파트 잔해, 철근, 콘크리트가 박혀있다.',
+    personality:'무언, 우직. 인간 문명에 집착한다.',
+    secret:'인간의 탐욕과 개발로 파괴된 산들의 한이 응집해 태어난 존재.',
+    quote:'말이 없다.',
+    battle:{god:'없음 (자연재해 자체)',weapon:'바위 몸체 — 압사, 산사태',skill:'대지 진동',domain:'미상'}
+  }
+};
+
+function openModal(id) {
+  const d = charData[id];
+  if(!d) return;
+  document.getElementById('modalInner').innerHTML = `
+    <div class="modal-header">
+      <div class="modal-name">${d.name}</div>
+      <div class="modal-meta">${d.meta}</div>
+    </div>
+    ${d.img ? `<div class="modal-img-block"><img src="${d.img}" alt="${d.name}"></div>` : ''}
+    <div class="modal-body">
+      <div><p class="modal-section-title">외형 · APPEARANCE</p><p class="modal-text">${d.appearance}</p></div>
+      <div><p class="modal-section-title">성격 · PERSONALITY</p><p class="modal-text">${d.personality}</p></div>
+      <div class="modal-quote">${d.quote}</div>
+      <div><p class="modal-section-title">비밀 · SECRET</p><p class="modal-text">${d.secret}</p></div>
+      <div class="modal-battle">
+        <p class="modal-section-title">전투 · BATTLE</p>
+        <div class="modal-battle-item"><span class="modal-battle-label">수호신</span><span class="modal-battle-value">${d.battle.god}</span></div>
+        <div class="modal-battle-item"><span class="modal-battle-label">신구</span><span class="modal-battle-value">${d.battle.weapon}</span></div>
+        <div class="modal-battle-item"><span class="modal-battle-label">신술</span><span class="modal-battle-value">${d.battle.skill}</span></div>
+        <div class="modal-battle-item"><span class="modal-battle-label">신명개방</span><span class="modal-battle-value">${d.battle.domain}</span></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); document.body.style.overflow=''; }
+function closeModalOutside(e) { if(e.target===document.getElementById('modalOverlay')) closeModal(); }
+
+function switchFaction(id, btn) {
+  document.querySelectorAll('.faction-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.faction-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('faction-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function filterChar(faction, btn) {
+  document.querySelectorAll('.char-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.char-card').forEach(card=>{
+    card.style.display=(faction==='all'||card.dataset.faction===faction)?'':'none';
+  });
+}
+
+function switchGallery(id, btn) {
+  document.querySelectorAll('.gallery-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.gallery-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('gallery-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function openLightbox(el) {
+  const img = el.querySelector('img');
+  if(!img) return;
+  document.getElementById('lightboxImg').src = img.src;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){closeModal();closeLightbox();} });
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>신술개전 神術開戰</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700;900&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0a0805;
+  --deep: #100c08;
+  --gold: #c9a84c;
+  --gold-dim: #8a6f2e;
+  --red: #8b1a1a;
+  --red-bright: #c0392b;
+  --paper: #1a1410;
+  --text: #d4c4a0;
+  --text-dim: #8a7a5e;
+  --border: rgba(201,168,76,0.2);
+  --border-bright: rgba(201,168,76,0.5);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--black);
+  color:var(--text);
+  font-family:'Noto Serif KR',serif;
+  overflow-x:hidden;
+}
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:1000;
+  opacity:0.4;
+}
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--black); }
+::-webkit-scrollbar-thumb { background:var(--gold-dim); }
+
+nav {
+  position:fixed;
+  top:0; width:100%;
+  z-index:100;
+  padding:1.2rem 3rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:linear-gradient(to bottom,rgba(10,8,5,0.95),transparent);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo { font-size:1.3rem; font-weight:900; color:var(--gold); letter-spacing:0.3em; text-shadow:0 0 20px rgba(201,168,76,0.4); }
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a { color:var(--text-dim); text-decoration:none; font-size:0.85rem; letter-spacing:0.15em; transition:color 0.3s; font-family:'Noto Sans KR',sans-serif; }
+.nav-links a:hover { color:var(--gold); }
+
+.hero {
+  height:100vh;
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  position:relative; overflow:hidden;
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(139,26,26,0.15) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 30%,rgba(201,168,76,0.08) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 80%,rgba(139,26,26,0.1) 0%,transparent 40%);
+}
+.hero-content { text-align:center; position:relative; z-index:1; }
+.hero-subtitle { font-size:0.8rem; letter-spacing:0.5em; color:var(--gold-dim); margin-bottom:1.5rem; font-family:'Noto Sans KR',sans-serif; animation:fadeUp 1s ease forwards; opacity:0; }
+.hero-title { font-size:clamp(4rem,10vw,9rem); font-weight:900; color:var(--gold); line-height:0.9; text-shadow:0 0 40px rgba(201,168,76,0.3),0 0 80px rgba(201,168,76,0.1); animation:fadeUp 1s 0.2s ease forwards; opacity:0; letter-spacing:0.05em; }
+.hero-title-sub { font-size:clamp(1rem,2.5vw,1.8rem); color:var(--red-bright); letter-spacing:0.4em; margin-top:0.5rem; animation:fadeUp 1s 0.4s ease forwards; opacity:0; }
+.hero-desc { margin-top:2rem; font-size:0.9rem; color:var(--text-dim); letter-spacing:0.1em; line-height:2; animation:fadeUp 1s 0.6s ease forwards; opacity:0; font-family:'Noto Sans KR',sans-serif; }
+.hero-divider { width:1px; height:80px; background:linear-gradient(to bottom,var(--gold),transparent); margin:2.5rem auto 0; animation:fadeUp 1s 0.8s ease forwards; opacity:0; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+section { padding:8rem 2rem; max-width:1200px; margin:0 auto; }
+.section-header { text-align:center; margin-bottom:5rem; }
+.section-label { font-size:0.7rem; letter-spacing:0.5em; color:var(--gold-dim); font-family:'Noto Sans KR',sans-serif; margin-bottom:0.8rem; }
+.section-title { font-size:clamp(2rem,4vw,3.5rem); font-weight:900; color:var(--gold); letter-spacing:0.1em; }
+.section-divider { width:60px; height:1px; background:var(--gold-dim); margin:1.5rem auto; }
+
+#world { border-top:1px solid var(--border); }
+.world-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; }
+.world-card {
+  background:linear-gradient(135deg,rgba(26,20,16,0.8),rgba(16,12,8,0.9));
+  border:1px solid var(--border);
+  padding:2.5rem; position:relative; transition:border-color 0.3s,transform 0.3s; overflow:hidden;
+}
+.world-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:linear-gradient(to bottom,var(--gold),var(--red)); opacity:0; transition:opacity 0.3s; }
+.world-card:hover { border-color:var(--border-bright); transform:translateY(-3px); }
+.world-card:hover::before { opacity:1; }
+.world-card-icon { font-size:2rem; margin-bottom:1rem; display:block; }
+.world-card-title { font-size:1.2rem; color:var(--gold); margin-bottom:1rem; letter-spacing:0.1em; }
+.world-card-text { font-size:0.85rem; color:var(--text-dim); line-height:2; font-family:'Noto Sans KR',sans-serif; }
+
+.sal-grades { display:flex; flex-direction:column; gap:1rem; margin-top:3rem; }
+.sal-grade { display:flex; align-items:center; gap:2rem; padding:1.2rem 2rem; border:1px solid var(--border); background:rgba(16,12,8,0.5); transition:all 0.3s; }
+.sal-grade:hover { border-color:var(--border-bright); background:rgba(26,20,16,0.8); }
+.sal-grade-rank { font-size:1.8rem; font-weight:900; color:var(--red-bright); min-width:60px; text-align:center; }
+.sal-grade-info h4 { color:var(--gold); font-size:0.9rem; margin-bottom:0.3rem; letter-spacing:0.1em; }
+.sal-grade-info p { color:var(--text-dim); font-size:0.8rem; font-family:'Noto Sans KR',sans-serif; }
+
+.heungmaek-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-top:3rem; }
+.heungmaek-card { text-align:center; padding:2.5rem 1rem; border:1px solid var(--border); background:rgba(16,12,8,0.5); position:relative; overflow:hidden; transition:all 0.3s; }
+.heungmaek-card::after { content:''; position:absolute; bottom:0; left:0; width:100%; height:2px; background:linear-gradient(to right,var(--red),var(--gold)); transform:scaleX(0); transition:transform 0.3s; }
+.heungmaek-card:hover::after { transform:scaleX(1); }
+.heungmaek-card:hover { border-color:var(--border-bright); background:rgba(26,20,16,0.8); }
+.heungmaek-location { font-size:1.3rem; font-weight:900; color:var(--gold); margin-bottom:0.5rem; }
+.heungmaek-sin { font-size:0.8rem; color:var(--red-bright); letter-spacing:0.2em; font-family:'Noto Sans KR',sans-serif; }
+
+#factions { border-top:1px solid var(--border); }
+.faction-tabs { display:flex; gap:0; margin-bottom:3rem; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+.faction-tab { padding:1rem 2rem; background:none; border:none; color:var(--text-dim); font-family:'Noto Serif KR',serif; font-size:0.9rem; cursor:pointer; letter-spacing:0.1em; transition:all 0.3s; border-bottom:2px solid transparent; margin-bottom:-1px; }
+.faction-tab:hover { color:var(--gold); }
+.faction-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+.faction-content { display:none; }
+.faction-content.active { display:block; }
+.faction-info { display:grid; grid-template-columns:1fr 2fr; gap:4rem; align-items:start; }
+.faction-name-block h2 { font-size:2.5rem; font-weight:900; color:var(--gold); line-height:1; margin-bottom:0.5rem; }
+.faction-name-block .faction-type { font-size:0.75rem; color:var(--red-bright); letter-spacing:0.3em; font-family:'Noto Sans KR',sans-serif; }
+.faction-desc { font-size:0.9rem; color:var(--text-dim); line-height:2.2; font-family:'Noto Sans KR',sans-serif; border-left:1px solid var(--border); padding-left:2rem; }
+.faction-tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1.5rem; }
+.faction-tag { padding:0.3rem 0.8rem; border:1px solid var(--border); font-size:0.7rem; color:var(--text-dim); letter-spacing:0.1em; font-family:'Noto Sans KR',sans-serif; }
+
+#characters { border-top:1px solid var(--border); max-width:100%; padding:8rem 4rem; }
+.char-filter { display:flex; gap:1rem; justify-content:center; margin-bottom:4rem; flex-wrap:wrap; }
+.char-filter-btn { padding:0.5rem 1.5rem; background:none; border:1px solid var(--border); color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; font-size:0.8rem; cursor:pointer; letter-spacing:0.1em; transition:all 0.3s; }
+.char-filter-btn:hover,.char-filter-btn.active { border-color:var(--gold); color:var(--gold); background:rgba(201,168,76,0.05); }
+.char-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; max-width:1400px; margin:0 auto; }
+.char-card { background:linear-gradient(135deg,rgba(26,20,16,0.9),rgba(16,12,8,0.95)); border:1px solid var(--border); overflow:hidden; transition:all 0.4s; cursor:pointer; position:relative; }
+.char-card:hover { border-color:var(--border-bright); transform:translateY(-5px); box-shadow:0 20px 40px rgba(0,0,0,0.5),0 0 20px rgba(201,168,76,0.05); }
+.char-img-placeholder { width:100%; aspect-ratio:1216/832; background:linear-gradient(135deg,rgba(26,20,16,1),rgba(16,12,8,1)); display:flex; align-items:center; justify-content:center; font-size:3rem; color:rgba(201,168,76,0.1); position:relative; overflow:hidden; }
+.char-img-placeholder img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top; }
+.char-img-placeholder::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 50%,rgba(10,8,5,0.9) 100%); pointer-events:none; }
+.char-img-placeholder .char-symbol { position:relative; z-index:1; }
+.char-info { padding:1.5rem; }
+.char-name { font-size:1.3rem; font-weight:700; color:var(--gold); letter-spacing:0.05em; margin-bottom:0.3rem; }
+.char-meta { font-size:0.75rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; margin-bottom:0.8rem; }
+.char-faction { display:inline-block; padding:0.2rem 0.6rem; border:1px solid var(--border); font-size:0.65rem; color:var(--red-bright); letter-spacing:0.1em; font-family:'Noto Sans KR',sans-serif; margin-bottom:0.8rem; }
+.char-traits { display:flex; flex-wrap:wrap; gap:0.3rem; }
+.char-trait { font-size:0.65rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; }
+.char-trait::after { content:' · '; }
+.char-trait:last-child::after { content:''; }
+.char-quote { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); font-size:0.75rem; color:var(--text-dim); font-style:italic; line-height:1.8; font-family:'Noto Sans KR',sans-serif; }
+
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(10,8,5,0.95); z-index:500; overflow-y:auto; backdrop-filter:blur(10px); }
+.modal-overlay.active { display:block; }
+.modal { max-width:1000px; margin:5rem auto; background:linear-gradient(135deg,rgba(26,20,16,0.99),rgba(16,12,8,0.99)); border:1px solid var(--border-bright); padding:4rem; position:relative; animation:modalIn 0.3s ease; }
+@keyframes modalIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+.modal-close { position:absolute; top:2rem; right:2rem; background:none; border:1px solid var(--border); color:var(--text-dim); width:40px; height:40px; cursor:pointer; font-size:1.2rem; transition:all 0.3s; display:flex; align-items:center; justify-content:center; }
+.modal-close:hover { border-color:var(--gold); color:var(--gold); }
+.modal-header { margin-bottom:2rem; padding-bottom:2rem; border-bottom:1px solid var(--border); }
+.modal-name { font-size:3rem; font-weight:900; color:var(--gold); letter-spacing:0.05em; }
+.modal-meta { font-size:0.85rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; margin-top:0.5rem; }
+.modal-img-block { margin-bottom:2rem; }
+.modal-img-block img { width:100%; max-height:400px; object-fit:cover; object-position:center top; border:1px solid var(--border); }
+.modal-body { display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
+.modal-section-title { font-size:0.7rem; letter-spacing:0.3em; color:var(--gold-dim); margin-bottom:1rem; font-family:'Noto Sans KR',sans-serif; }
+.modal-text { font-size:0.85rem; color:var(--text-dim); line-height:2; font-family:'Noto Sans KR',sans-serif; }
+.modal-quote { grid-column:1/-1; padding:1.5rem 2rem; border-left:3px solid var(--gold); background:rgba(201,168,76,0.03); font-size:0.9rem; color:var(--text); font-style:italic; line-height:2; font-family:'Noto Sans KR',sans-serif; }
+.modal-battle { grid-column:1/-1; padding-top:2rem; border-top:1px solid var(--border); }
+.modal-battle-item { display:flex; gap:1rem; margin-bottom:0.8rem; font-size:0.85rem; font-family:'Noto Sans KR',sans-serif; }
+.modal-battle-label { color:var(--gold-dim); min-width:80px; font-size:0.75rem; letter-spacing:0.1em; padding-top:0.1rem; }
+.modal-battle-value { color:var(--text-dim); line-height:1.8; }
+
+#gallery { border-top:1px solid var(--border); max-width:100%; padding:8rem 4rem; }
+.gallery-tabs { display:flex; gap:0; margin-bottom:3rem; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+.gallery-tab { padding:0.8rem 1.5rem; background:none; border:none; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; font-size:0.8rem; cursor:pointer; letter-spacing:0.1em; transition:all 0.3s; border-bottom:2px solid transparent; margin-bottom:-1px; }
+.gallery-tab:hover { color:var(--gold); }
+.gallery-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+.gallery-grid-normal { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; max-width:1400px; margin:0 auto; }
+.gallery-normal-item { aspect-ratio:1216/832; background:rgba(26,20,16,0.8); border:1px solid var(--border); overflow:hidden; position:relative; cursor:pointer; transition:all 0.3s; }
+.gallery-normal-item:hover { border-color:var(--border-bright); }
+.gallery-normal-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+.gallery-normal-item:hover img { transform:scale(1.05); }
+
+/* 신명개방 그리드 — 가로로 긴 이미지 */
+.gallery-grid-domain { display:flex; flex-direction:column; gap:1.5rem; max-width:1400px; margin:0 auto; }
+.gallery-domain-item { width:100%; aspect-ratio:1800/700; background:rgba(26,20,16,0.8); border:1px solid var(--border); overflow:hidden; position:relative; cursor:pointer; transition:all 0.3s; }
+.gallery-domain-item:hover { border-color:var(--border-bright); }
+.gallery-domain-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+.gallery-domain-item:hover img { transform:scale(1.03); }
+
+.gallery-item-inner { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:0.5rem; }
+.gallery-item-char { font-size:0.85rem; color:var(--gold); font-family:'Noto Serif KR',serif; letter-spacing:0.1em; }
+.gallery-item-type { font-size:0.7rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; }
+.gallery-item-label { position:absolute; bottom:0; left:0; right:0; padding:0.8rem 1rem; background:linear-gradient(to top,rgba(10,8,5,0.95),transparent); font-size:0.7rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; opacity:0; transition:opacity 0.3s; }
+.gallery-normal-item:hover .gallery-item-label,
+.gallery-domain-item:hover .gallery-item-label { opacity:1; }
+.gallery-content { display:none; }
+.gallery-content.active { display:block; }
+
+.lightbox { display:none; position:fixed; inset:0; background:rgba(10,8,5,0.97); z-index:600; align-items:center; justify-content:center; }
+.lightbox.active { display:flex; }
+.lightbox img { max-width:95vw; max-height:90vh; object-fit:contain; }
+.lightbox-close { position:absolute; top:2rem; right:2rem; background:none; border:1px solid var(--border); color:var(--text-dim); width:40px; height:40px; cursor:pointer; font-size:1.2rem; display:flex; align-items:center; justify-content:center; }
+
+footer { border-top:1px solid var(--border); padding:3rem; text-align:center; }
+.footer-logo { font-size:2rem; font-weight:900; color:var(--gold-dim); letter-spacing:0.3em; margin-bottom:1rem; }
+.footer-text { font-size:0.75rem; color:var(--text-dim); font-family:'Noto Sans KR',sans-serif; letter-spacing:0.1em; }
+
+@media(max-width:768px) {
+  nav { padding:1rem; }
+  .nav-links { display:none; }
+  .world-grid { grid-template-columns:1fr; }
+  .heungmaek-grid { grid-template-columns:repeat(2,1fr); }
+  .faction-info { grid-template-columns:1fr; gap:2rem; }
+  .modal-body { grid-template-columns:1fr; }
+  .modal { padding:2rem; margin:2rem 1rem; }
+  #characters,#gallery { padding:6rem 1.5rem; }
+  .gallery-grid-normal { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">신술개전</div>
+  <ul class="nav-links">
+    <li><a href="#world">세계관</a></li>
+    <li><a href="#factions">세력</a></li>
+    <li><a href="#characters">캐릭터</a></li>
+    <li><a href="#gallery">갤러리</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-subtitle">DARK FANTASY · MODERN KOREA</p>
+    <h1 class="hero-title">신술개전</h1>
+    <p class="hero-title-sub">神術開戰</p>
+    <p class="hero-desc">인간의 절망이 살(煞)로 응집되고<br>그 살이 모여 귀(鬼)가 되는 세계</p>
+    <div class="hero-divider"></div>
+  </div>
+</div>
+
+<section id="world">
+  <div class="section-header">
+    <p class="section-label">LORE · 세계관</p>
+    <h2 class="section-title">살귀의 세계</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="world-grid">
+    <div class="world-card"><span class="world-card-icon">煞</span><h3 class="world-card-title">살(煞)이란</h3><p class="world-card-text">인간의 스트레스, 분노, 절망 등 부정적 감정이 응집된 에너지. 현대 한국 사회의 병폐가 낳은 저주의 결정체로, 충분히 쌓이면 의지를 가진 존재로 변한다.</p></div>
+    <div class="world-card"><span class="world-card-icon">鬼</span><h3 class="world-card-title">살귀(煞鬼)</h3><p class="world-card-text">살이 모여 형태를 갖춘 괴물. 4~3급의 본능형 동물 형태부터 특급의 역사적 한(恨)이 응집된 재앙 수준까지, 등급에 따라 위협도가 극명하게 갈린다.</p></div>
+    <div class="world-card"><span class="world-card-icon">神</span><h3 class="world-card-title">신술사(神術師)</h3><p class="world-card-text">살귀를 퇴치하는 이능력자. 맑은 정신 에너지 '신기(神氣)'와 저주받은 무기 '신구(神具)', 그리고 수호신의 능력을 빌리는 '강신(降神)'술을 사용한다.</p></div>
+    <div class="world-card"><span class="world-card-icon">開</span><h3 class="world-card-title">신명개방(神明開放)</h3><p class="world-card-text">궁극의 결계술. 심상 세계를 현실에 강제로 덮어씌워 무속적 룰이 강제되는 절대 영역을 전개한다. 영역 내 규칙 위반 시 즉사.</p></div>
+  </div>
+  <div style="margin-top:5rem;">
+    <h3 style="color:var(--gold);font-size:1.2rem;letter-spacing:0.2em;margin-bottom:2rem;text-align:center;">살귀 등급표</h3>
+    <div class="sal-grades">
+      <div class="sal-grade"><div class="sal-grade-rank">特</div><div class="sal-grade-info"><h4>특급</h4><p>역사적 한(恨)이 응집된 재앙. 국가 단위 위협. 현대 병기 완전 무효.</p></div></div>
+      <div class="sal-grade"><div class="sal-grade-rank">1</div><div class="sal-grade-info"><h4>1급</h4><p>고지능. 현대 병기 무효. 신술사 복수 투입 필요.</p></div></div>
+      <div class="sal-grade"><div class="sal-grade-rank">2</div><div class="sal-grade-info"><h4>2급</h4><p>인간형. 집착 언어 중얼거림. 특정 대상이나 장소에 집착.</p></div></div>
+      <div class="sal-grade"><div class="sal-grade-rank">3~4</div><div class="sal-grade-info"><h4>3~4급</h4><p>본능형. 동물 형태. 자정 이후 자동 결계 전개 지역에 출몰.</p></div></div>
+    </div>
+  </div>
+  <div style="margin-top:5rem;">
+    <h3 style="color:var(--gold);font-size:1.2rem;letter-spacing:0.2em;margin-bottom:1rem;text-align:center;">4대 흉맥 (四大凶脈)</h3>
+    <p style="text-align:center;color:var(--text-dim);font-size:0.85rem;font-family:'Noto Sans KR',sans-serif;margin-bottom:2rem;">자정 이후 자동 결계가 전개되며 토벌전이 발생하는 서울의 4개 핵심 구역</p>
+    <div class="heungmaek-grid">
+      <div class="heungmaek-card"><div class="heungmaek-location">노량진</div><div class="heungmaek-sin">절망 · 挫折</div></div>
+      <div class="heungmaek-card"><div class="heungmaek-location">강남역</div><div class="heungmaek-sin">탐욕 · 과로</div></div>
+      <div class="heungmaek-card"><div class="heungmaek-location">여의도</div><div class="heungmaek-sin">파멸 · 破滅</div></div>
+      <div class="heungmaek-card"><div class="heungmaek-location">신림</div><div class="heungmaek-sin">고독 · 孤獨</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="factions">
+  <div class="section-header">
+    <p class="section-label">FACTIONS · 세력</p>
+    <h2 class="section-title">주요 세력</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="faction-tabs">
+    <button class="faction-tab active" onclick="switchFaction('jesalguk',this)">제살국</button>
+    <button class="faction-tab" onclick="switchFaction('dohwa',this)">도화서</button>
+    <button class="faction-tab" onclick="switchFaction('haedong',this)">해동청</button>
+    <button class="faction-tab" onclick="switchFaction('changwi',this)">창귀회</button>
+    <button class="faction-tab" onclick="switchFaction('sipjang',this)">십장생</button>
+    <button class="faction-tab" onclick="switchFaction('neutral',this)">중립</button>
+  </div>
+  <div id="faction-jesalguk" class="faction-content active">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>제살국</h2><p class="faction-type">대한민국 신술사 통제 정부 부처</p><div class="faction-tags"><span class="faction-tag">특수재난대응국 위장</span><span class="faction-tag">전국 살귀 감시</span><span class="faction-tag">신술사 육성·파견</span></div></div>
+      <div class="faction-desc">대한민국의 신술사를 통제하는 정부 공식 부처. 일반인에겐 '특수재난대응국'으로 위장되어 있다. 전국의 살귀를 감시하고 신술사를 육성·파견하여 토벌을 수행한다.<br><br>중앙본부 도화서(서울)와 부산 지부 해동청으로 나뉘며, 3대 신가(풍산류씨·밀양박씨·무령신씨)와의 유착이 심각하다. 내부적으로 '심청프로젝트'라는 어두운 비밀을 품고 있다.</div>
+    </div>
+  </div>
+  <div id="faction-dohwa" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>도화서</h2><p class="faction-type">제살국 중앙본부 · 서울</p><div class="faction-tags"><span class="faction-tag">혈통주의</span><span class="faction-tag">부패한 원로원</span><span class="faction-tag">3대 신가</span></div></div>
+      <div class="faction-desc">제살국의 중앙 본부. 혈통주의와 귀족 문화가 뿌리 깊게 자리한 조직으로, 부패한 원로원이 권력을 독점하고 있다.<br><br>3대 신가(풍산류씨·밀양박씨·무령신씨)와의 유착이 심각하며, 해동청과 예산·권력을 두고 갈등한다.<div class="faction-tags" style="margin-top:1.5rem;"><span class="faction-tag">풍산류씨 — 공간·결계</span><span class="faction-tag">밀양박씨 — 육탄·무구소환</span><span class="faction-tag">무령신씨 — 사령·원혼조종</span></div></div>
+    </div>
+  </div>
+  <div id="faction-haedong" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>해동청</h2><p class="faction-type">제살국 부산 지부</p><div class="faction-tags"><span class="faction-tag">실전파</span><span class="faction-tag">육탄 특화</span><span class="faction-tag">폐공장 기반</span></div></div>
+      <div class="faction-desc">도화서 귀족 문화를 혐오하는 부산 지부. 폐공장을 기반으로 운영되는 거친 실전파 해결사 집단.<br><br>화려한 기교보다 압도적인 육탄 파괴력을 신봉한다. 출신보다 실력과 의리를 중시하며, 예산 차별에도 불구하고 강력한 전투력을 유지한다.</div>
+    </div>
+  </div>
+  <div id="faction-changwi" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>창귀회</h2><p class="faction-type">타락 신술사 테러 조직</p><div class="faction-tags"><span class="faction-tag">테러 조직</span><span class="faction-tag">특급살귀 양성</span><span class="faction-tag">일반인 학살</span></div></div>
+      <div class="faction-desc">타락한 신술사들이 모인 테러 조직. 일반인을 학살하여 그 살(煞)로 특급살귀를 양성하는 것을 목표로 한다.<br><br>리더 기태연을 중심으로 도화서에 대한 깊은 환멸과 세상에 대한 허무주의적 이상을 공유한다. 썩은 세계를 찢어버리려는 나름의 철학을 가진 조직.</div>
+    </div>
+  </div>
+  <div id="faction-sipjang" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>십장생</h2><p class="faction-type">타락한 고대 자연물·요괴</p><div class="faction-tags"><span class="faction-tag">특급 요괴</span><span class="faction-tag">자연재해급</span><span class="faction-tag">인류 멸망</span></div></div>
+      <div class="faction-desc">인간의 탐욕과 환경 오염에 타락한 고대 자연물·요괴. 자연재해급 위력을 지니며 인류 멸망을 획책한다.<br><br>천 년 전 10명이 존재했으나 토벌로 소멸. 현대의 악을 흡수해 진화한 핵심 3명(해·물·산)과 총수만 생존. 창귀회와 협력하여 서울을 제물로 나머지 십장생 부활을 노린다.</div>
+    </div>
+  </div>
+  <div id="faction-neutral" class="faction-content">
+    <div class="faction-info">
+      <div class="faction-name-block"><h2>황학동<br>지하만물상</h2><p class="faction-type">중립 구역</p><div class="faction-tags"><span class="faction-tag">중립</span><span class="faction-tag">암거래</span><span class="faction-tag">저주받은 사물</span></div></div>
+      <div class="faction-desc">어떤 세력과도 적대하지 않는 중립 구역. 저주받은 사물의 암거래 시장.<br><br>주인 연호가 운영하며, 규칙이 곧 법이다. 이 공간에서 세력 간 충돌은 엄격히 금지되며 위반 시 연호의 저주를 받는다.</div>
+    </div>
+  </div>
+</section>
+
+<section id="characters">
+  <div class="section-header">
+    <p class="section-label">CHARACTERS · 등장인물</p>
+    <h2 class="section-title">등장인물</h2>
+    <div class="section-divider"></div>
+  </div>
+  <div class="char-filter">
+    <button class="char-filter-btn active" onclick="filterChar('all',this)">전체</button>
+    <button class="char-filter-btn" onclick="filterChar('dohwa',this)">도화서</button>
+    <button class="char-filter-btn" onclick="filterChar('haedong',this)">해동청</button>
+    <button class="char-filter-btn" onclick="filterChar('changwi',this)">창귀회</button>
+    <button class="char-filter-btn" onclick="filterChar('sipjang',this)">십장생</button>
+    <button class="char-filter-btn" onclick="filterChar('neutral',this)">중립·기타</button>
+  </div>
+  <div class="char-grid" id="charGrid">
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('chaechiwon')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/ccw.png" alt="채치원"><span class="char-symbol">採</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 특무관</div>
+        <div class="char-name">채치원</div>
+        <div class="char-meta">38세 · 188cm</div>
+        <div class="char-traits"><span class="char-trait">나태</span><span class="char-trait">염세주의</span><span class="char-trait">만성피로</span><span class="char-trait">츤데레</span></div>
+        <div class="char-quote">"아, 야근수당도 안 주는데. 거기 잡귀, 딱 3초 준다."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('ryujinhae')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/rjh.png" alt="류진해"><span class="char-symbol">柳</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 풍산류씨 · 종1품</div>
+        <div class="char-name">류진해</div>
+        <div class="char-meta">20세 · 183cm</div>
+        <div class="char-traits"><span class="char-trait">얼음장</span><span class="char-trait">오만</span><span class="char-trait">야망</span><span class="char-trait">순애</span></div>
+        <div class="char-quote">"신술사는 도구야. 쓸모를 증명하거나 부러지거나."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('shinhyunseo')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/shs.png" alt="신현서"><span class="char-symbol">申</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 무령신씨 · 종1품</div>
+        <div class="char-name">신현서</div>
+        <div class="char-meta">31세 · 187cm</div>
+        <div class="char-traits"><span class="char-trait">요염</span><span class="char-trait">퇴폐</span><span class="char-trait">가식적 비정함</span><span class="char-trait">비련</span></div>
+        <div class="char-quote">"죽은 것들은 거짓말을 안 해."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('chahakgwi')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/chg.png" alt="차학귀"><span class="char-symbol">車</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 원로원 직속 · 정1품</div>
+        <div class="char-name">차학귀</div>
+        <div class="char-meta">29세 · 182cm</div>
+        <div class="char-traits"><span class="char-trait">다정한 가면</span><span class="char-trait">사디스트</span><span class="char-trait">사냥개</span></div>
+        <div class="char-quote">"예쁘게 잘라줄게."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="dohwa" onclick="openModal('bakmansoo')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pms.png" alt="박만수"><span class="char-symbol">朴</span></div>
+      <div class="char-info">
+        <div class="char-faction">도화서 · 원로원 수장 · 밀양박씨</div>
+        <div class="char-name">박만수</div>
+        <div class="char-meta">72세 · 흑막</div>
+        <div class="char-traits"><span class="char-trait">광기</span><span class="char-trait">흑막</span><span class="char-trait">영생 집착</span></div>
+        <div class="char-quote">심청프로젝트의 주도자.</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="haedong" onclick="openModal('gangcheoljun')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kcj.png" alt="강철준"><span class="char-symbol">剛</span></div>
+      <div class="char-info">
+        <div class="char-faction">해동청 · 정1품</div>
+        <div class="char-name">강철준</div>
+        <div class="char-meta">45세 · 192cm</div>
+        <div class="char-traits"><span class="char-trait">마초</span><span class="char-trait">깡다구</span><span class="char-trait">의리</span><span class="char-trait">직진</span></div>
+        <div class="char-quote">"주먹으로 온나! 턱주가리 부사줄게!"</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="haedong" onclick="openModal('baktaegun')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/ptg.png" alt="박태건"><span class="char-symbol">爆</span></div>
+      <div class="char-info">
+        <div class="char-faction">해동청 · 밀양박씨 · 종1품</div>
+        <div class="char-name">박태건</div>
+        <div class="char-meta">27세 · 195cm</div>
+        <div class="char-traits"><span class="char-trait">열혈</span><span class="char-trait">반항</span><span class="char-trait">반골</span><span class="char-trait">속정 깊음</span></div>
+        <div class="char-quote">"귀 막아라. 포격 들어간다."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="changwi" onclick="openModal('gitaeyeon')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kty.png" alt="기태연"><span class="char-symbol">奇</span></div>
+      <div class="char-info">
+        <div class="char-faction">창귀회 · 리더 · 前특무관</div>
+        <div class="char-name">기태연</div>
+        <div class="char-meta">43세 · 186cm</div>
+        <div class="char-traits"><span class="char-trait">위선적 다정</span><span class="char-trait">나른한 광기</span><span class="char-trait">내면 허무</span></div>
+        <div class="char-quote">"이 도화지는 한 번 찢어야 해."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="changwi" onclick="openModal('bakjaegak')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pjg.png" alt="박재각"><span class="char-symbol">破</span></div>
+      <div class="char-info">
+        <div class="char-faction">창귀회 · 오른팔 · 前정1품</div>
+        <div class="char-name">박재각</div>
+        <div class="char-meta">41세 · 187cm</div>
+        <div class="char-traits"><span class="char-trait">냉철</span><span class="char-trait">현실주의</span><span class="char-trait">야심</span><span class="char-trait">지략가</span></div>
+        <div class="char-quote">"이 썩은 세상은 힘 있는 자가 지배해야 해."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="neutral" onclick="openModal('seotaehyuk')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/sth.png" alt="서태혁"><span class="char-symbol">煞</span></div>
+      <div class="char-info">
+        <div class="char-faction">소속불명 · 수배범 · 특급</div>
+        <div class="char-name">서태혁</div>
+        <div class="char-meta">24세 · 189cm</div>
+        <div class="char-traits"><span class="char-trait">야수</span><span class="char-trait">불안정</span><span class="char-trait">인간 증오</span><span class="char-trait">애정결핍</span></div>
+        <div class="char-quote">"심연은... 너무 추웠어."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="neutral" onclick="openModal('yeonho')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/yh.png" alt="연호"><span class="char-symbol">緣</span></div>
+      <div class="char-info">
+        <div class="char-faction">황학동 지하만물상</div>
+        <div class="char-name">연호</div>
+        <div class="char-meta">나이불명 · 외형 12세 · 145cm</div>
+        <div class="char-traits"><span class="char-trait">염세</span><span class="char-trait">츤데레</span><span class="char-trait">외로움</span></div>
+        <div class="char-quote">"네 수명이라도 저울에 달아보든가."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="sipjang" onclick="openModal('chongsu')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/tree.png" alt="소나무"><span class="char-symbol">松</span></div>
+      <div class="char-info">
+        <div class="char-faction">십장생 · 총수</div>
+        <div class="char-name">소나무 (松)</div>
+        <div class="char-meta">수령 불명 · 천 년의 한(恨)</div>
+        <div class="char-traits"><span class="char-trait">무언</span><span class="char-trait">침묵</span><span class="char-trait">흑막</span></div>
+        <div class="char-quote">말이 없다. 그 침묵이 더 무섭다.</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="sipjang" onclick="openModal('hae')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/sun.png" alt="해"><span class="char-symbol">日</span></div>
+      <div class="char-info">
+        <div class="char-faction">십장생 · 폭염·가뭄</div>
+        <div class="char-name">해 (日)</div>
+        <div class="char-meta">특급 요괴</div>
+        <div class="char-traits"><span class="char-trait">파괴적</span><span class="char-trait">광기</span></div>
+        <div class="char-quote">"더워? 미쳐야지! 하하하!"</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="sipjang" onclick="openModal('mul')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/water.png" alt="물"><span class="char-symbol">水</span></div>
+      <div class="char-info">
+        <div class="char-faction">십장생 · 홍수·오염</div>
+        <div class="char-name">물 (水)</div>
+        <div class="char-meta">특급 요괴</div>
+        <div class="char-traits"><span class="char-trait">허무</span><span class="char-trait">처절</span></div>
+        <div class="char-quote">"다... 씻어버리자."</div>
+      </div>
+    </div>
+
+    <div class="char-card" data-faction="sipjang" onclick="openModal('san')">
+      <div class="char-img-placeholder"><img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/mountain.png" alt="산"><span class="char-symbol">山</span></div>
+      <div class="char-info">
+        <div class="char-faction">십장생 · 산사태</div>
+        <div class="char-name">산 (山)</div>
+        <div class="char-meta">특급 요괴</div>
+        <div class="char-traits"><span class="char-trait">무언</span><span class="char-trait">우직</span><span class="char-trait">인간 집착</span></div>
+        <div class="char-quote">인간의 탐욕이 낳은 한을 먹고 태어났다.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 갤러리 -->
+<section id="gallery">
+  <div class="section-header">
+    <p class="section-label">조연 · 신명개방</p>
+    <h2 class="section-title">갤러리</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="gallery-tabs">
+    <button class="gallery-tab active" onclick="switchGallery('normal',this)">조연</button>
+    <button class="gallery-tab" onclick="switchGallery('domain',this)">신명개방</button>
+  </div>
+
+  <!-- 조연 이미지 -->
+  <div id="gallery-normal" class="gallery-content active">
+    <div class="gallery-grid-normal">
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kyg.png" alt="김영감">
+        <div class="gallery-item-label">김영감 · 도화서 의무반장</div>
+      </div>
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/lsw.png" alt="이승우">
+        <div class="gallery-item-label">이승우 · 도화서 행정팀장</div>
+      </div>
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pgr.png" alt="박가람">
+        <div class="gallery-item-label">박가람 · 해동청 정보요원</div>
+      </div>
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pms.png" alt="박만수">
+        <div class="gallery-item-label">박만수 · 도화서 원로원 수장</div>
+      </div>
+      <div class="gallery-normal-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/cgh.png" alt="최가호">
+        <div class="gallery-item-label">최가호 · 창귀회 과학자</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 신명개방 이미지 — smgb_[코드].png -->
+  <div id="gallery-domain" class="gallery-content">
+    <div class="gallery-grid-domain">
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/cc_s.png" alt="채치원 신명개방">
+        <div class="gallery-item-label">채치원 · 태초의 숨결: 잿빛 운해</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/rj_s.png" alt="류진해 신명개방">
+        <div class="gallery-item-label">류진해 · 절영: 뒤틀린 거울방</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/sh_s.png" alt="신현서 신명개방">
+        <div class="gallery-item-label">신현서 · 야행: 백귀야행의 거리</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/ch_s.png" alt="차학귀 신명개방">
+        <div class="gallery-item-label">차학귀 · 능지처참: 보이지 않는 거미줄</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kc_s.png" alt="강철준 신명개방">
+        <div class="gallery-item-label">강철준 · 수장: 심해의 무덤</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/kt_s.png" alt="기태연 신명개방">
+        <div class="gallery-item-label">기태연 · 만마전: 광대들의 탈놀음</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pj_s.png" alt="박재각 신명개방">
+        <div class="gallery-item-label">박재각 · 흑룡의 둥지: 오염된 바다</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/st_s.png" alt="서태혁 신명개방">
+        <div class="gallery-item-label">서태혁 · 무저갱: 가라앉는 지옥</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/yh_s.png" alt="연호 신명개방">
+        <div class="gallery-item-label">연호 · 만물상: 탐욕의 전당</div>
+      </div>
+
+      <div class="gallery-domain-item" onclick="openLightbox(this)">
+        <img src="https://raw.githubusercontent.com/ux012/y/refs/heads/main/pm_s.png" alt="박만수 신명개방">
+        <div class="gallery-item-label">박만수 · 염라전: 생사심판</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">신술개전 神術開戰</div>
+  <p class="footer-text">인간의 절망이 살(煞)로 응집되고, 그 살이 모여 귀(鬼)가 되는 세계</p>
+</footer>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalInner"></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+const BASE = 'https://raw.githubusercontent.com/ux012/y/refs/heads/main/';
+
+const charData = {
+  chaechiwon: {
+    name:'채치원', meta:'38세 · 特務官 · 도화서 · 188cm',
+    img: BASE + 'ccw.png',
+    appearance:'처진 잿빛 눈 / 부스스 흑발 마블펌 / 오버핏 검은 긴 야상, 츄리닝, 삼선 슬리퍼 / 다크서클 / 나른 퇴폐미남 / 마른 잔근육',
+    personality:'나태, 염세주의, 만성피로. 살짝 츤데레. 세상에 지쳐있지만 누구보다 강한 특무관.',
+    secret:'과거 기태연과 함께 인당수 제물의 진실을 알았으나 방관한 죄책감을 품고 있다.',
+    quote:'"아, 야근수당도 안 주는데. 거기 잡귀, 딱 3초 준다. 알아서 소멸해라."',
+    battle:{god:'환웅 (하늘, 바람)',weapon:'흑색곰방대 — 연기로 공간 장악',skill:'청룡의 숨결 (바람)',domain:'[태초의 숨결: 잿빛 운해] — 끝없는 담배 연기와 잿빛 구름 소용돌이. 적은 폐부까지 스며드는 연기에 질식하며, 곰방대 잿가루가 떨어질 때 적 육체도 잿더미처럼 무너진다.'}
+  },
+  ryujinhae: {
+    name:'류진해', meta:'20세 · 從1品 · 도화서 · 풍산류씨 차기 가주 · 183cm',
+    img: BASE + 'rjh.png',
+    appearance:'파란 눈 / 하늘색 머리 / 블랙 수트, 검은 가죽 장갑 / 냉미남 / 탄탄 균형 체형',
+    personality:'얼음장, 오만, 야망, 의외로 순애. 감정을 철저히 억누르는 냉혹한 엘리트.',
+    secret:'가문 비리(인당수 제물 가담)를 역겨워하면서도, 개혁을 위해 스스로 더러운 일에 가담한다.',
+    quote:'"네 감정 따윈 알바 아니다. 신술사는 도구야. 쓸모를 증명하거나 부러지거나 둘 중 하나면 족해."',
+    battle:{god:'현무 (공간, 중력)',weapon:'윤도 — 전통 풍수 나침반, 손 위에 부유',skill:'공간 왜곡 및 중력 압사',domain:'[절영: 뒤틀린 거울방] — 사방이 거울인 무한 공간. 적의 방향감각 역전. 나침반 바늘을 돌려 적의 육체 공간을 어긋나게 해 산산조각 낸다.'}
+  },
+  shinhyunseo: {
+    name:'신현서', meta:'31세 · 從1品 · 도화서 · 무령신씨 차기 가주 · 187cm',
+    img: BASE + 'shs.png',
+    appearance:'적안 / 느슨하게 묶은 장발 흑발 / 검은 두루마기 / 눈 아래 붉은 부적 문양 / 붉은 실방울 귀걸이 / 창백 미남',
+    personality:'요염, 퇴폐, 가식적 비정함. 가문 개혁을 위해 스스로 괴물이 되려는 비련의 천재.',
+    secret:'차기 가주가 되기 위해 친형제 전부를 독살. 그 원혼들을 메인 가드로 부린다. 죽음·노화에 극도의 공포.',
+    quote:'"죽은 것들은 거짓말을 안 해. 그저 명령에 복종할 뿐이지. 너도 저들 사이에 끼워줄까?"',
+    battle:{god:'구미호 (환술, 영혼 흡수)',weapon:'피 묻은 거문고 — 줄을 튕겨 원혼 조종',skill:'여우비 (푸른 여우불 폭격)',domain:'[야행: 백귀야행의 거리] — 붉은 달 뜬 조선 공동묘지. 적 시청각 상실. 무한 재생 원혼 군단에게 산 채로 뜯기는 환상 속 실제 육체 찢김.'}
+  },
+  chahakgwi: {
+    name:'차학귀', meta:'29세 · 正1品 · 도화서 원로원 직속 · 182cm',
+    img: BASE + 'chg.png',
+    appearance:'새까만 눈(동공 큼) / 탈색 금발 댄디컷 / 목에 꿰맨 흉터 / 입술 피어싱 / 열 손가락 은반지 / 명품 가디건, 슬랙스',
+    personality:'다정한 가면을 쓴 사디스트. 도화서의 비밀 암살자이자 사냥개.',
+    secret:'선천적 무통각증. 타인의 고통과 비명을 보며 생존감을 느낀다. 고통이 궁금해 목을 반쯤 긋고 봉합한 흉터.',
+    quote:'"내가 너무 세게 조이면 아프니까 숨 딱 참고 있어봐. 예쁘게 잘라줄게."',
+    battle:{god:'창귀',weapon:'체내 이식 명주실 + 은장도 — 목 흉터 실밥 뜯어 피 묻은 실 뽑아냄',skill:'조사 (피아노 치듯 적 사지 절단)',domain:'[능지처참: 보이지 않는 거미줄] — 피칠한 붉은 실이 얽힌 무한 어둠. 입장 즉시 수만 가닥 실에 포박. 은장도로 직접 치명상 전까지 방어 불가.'}
+  },
+  bakmansoo: {
+    name:'박만수', meta:'72세 · 도화서 원로원 수장 · 밀양박씨 가주',
+    img: BASE + 'pms.png',
+    appearance:'희끗한 백발 / 전통 무속 의복 / 주름지고 위압적인 노인',
+    personality:'광기 어린 흑막. 겉으로는 진혼청의 수호자인 척하나 실제로는 영생과 권력을 위해 조직을 부패시켜왔다.',
+    secret:'심청프로젝트 주도자. 10년마다 신기가 가장 맑은 신술사를 광화문 지하 인당수에 산 채로 수몰시킨다.',
+    quote:'"서울을 지킨다"는 명분 아래 서울을 먹어왔다.',
+    battle:{god:'염라대왕 (생사판관)',weapon:'생사부 + 붓 — 죄업 폭로, 행동 봉쇄',skill:'황천길 (수명 시각화 후 단축)',domain:'[염라전: 생사심판] — 염라전이 현실에 소환. 생사부에 이름이 올라간 적은 죄업에 따라 즉사 판결.'}
+  },
+  gangcheoljun: {
+    name:'강철준', meta:'45세 · 正1品 · 해동청 · 192cm',
+    img: BASE + 'kcj.png',
+    appearance:'호박색 눈 / 탈색 거친 은발 투블럭 스왓컷 / 목~팔 거대 용 문신 / 뺨 흉터 / 근육 거구 / 오버핏 블랙 테크웨어 레인코트',
+    personality:'마초, 깡다구, 의리, 직진남. 경상도 사투리. 서울 엘리트 극혐 실전파.',
+    secret:'고아 출신. 살귀에게 먹힐 뻔한 것을 해동청 선배에게 구조됐다. 해동청이 유일한 가족.',
+    quote:'"마! 수트 입고 폼 잡는 거 역겨버서 못 보겠다. 사내답게 주먹으로 온나! 턱주가리 부사줄게!"',
+    battle:{god:'영노 (무엇이든 잡아먹는 바다 도깨비)',weapon:'피 묻은 거대한 녹슨 닻 + 쇠사슬',skill:'해무 (적 무기와 육체 산화 부식)',domain:'[수장: 심해의 무덤] — 수압 수만 톤의 새까만 심해. 적은 수압에 내장 파열, 물귀신에게 물어뜯김.'}
+  },
+  baktaegun: {
+    name:'박태건', meta:'27세 · 從1品 · 해동청 · 밀양박씨 이단아 · 195cm',
+    img: BASE + 'ptg.png',
+    appearance:'밝은 청록색 눈 / 어두운 피부 / 짧고 거친 붉은 스포티컷 / 한쪽 강철팔 변이 / 크롭 후드, 가슴 체인, 풍선껌',
+    personality:'열혈, 반항, 반골. 신명개방 불가 열등감을 화력으로 극복하려 한다.',
+    secret:'밀양박씨 출신이지만 선천적 신명개방 불가로 하자품 취급받아 가문을 부수고 가출했다.',
+    quote:'"술식? 마법? 지랄하네. 압도적인 화력은 모든 걸 해결한다. 귀 막아라. 포격 들어간다."',
+    battle:{god:'불가사리 (강철 먹는 환수)',weapon:'괴물 이빨 달린 대물저격총 (바주카 변형 가능)',skill:'장갑관통 (신기 압축 결계 무시 탄환)',domain:'신명개방 불가. 궁극기 [신명집중: 파천황] — 불가사리 모든 에너지를 총구에 집중, 적의 신명개방 원거리 폭파.'}
+  },
+  gitaeyeon: {
+    name:'기태연', meta:'43세 · 창귀회 리더 · 前特務官 · 186cm',
+    img: BASE + 'kty.png',
+    appearance:'자안(紫眼) / 적백 투톤 긴 땋은 머리 / 남색 전통 도포 / 뒤통수에 하회탈 / 우아한 전통적 미남',
+    personality:'위선적 다정함과 나른한 광기. 평소엔 우아하고 정중하지만 내면은 깊은 우울과 허무.',
+    secret:'채치원과 함께 인당수 제물의 진실을 알게 된 후, 제물로 지정된 인물을 직접 안락사시키고 도화서를 탈주했다.',
+    quote:'"사람들은 참 이상해. 스스로 지옥을 만들면서 왜 살려달라 발버둥 칠까? 이 도화지는 한 번 찢어야 해."',
+    battle:{god:'십이지신',weapon:'백팔 요괴의 탈 (하회탈, 백정탈 등) — 탈 바꿔쓰며 인격/요괴 능력 변환',skill:'강령술 (탈 바꿔쓰며 군단 소환)',domain:'[만마전: 광대들의 탈놀음] — 기괴한 풍물놀이 울려퍼지는 핏빛 조선 장터. 적은 강제로 광대 역할 부여돼 음악 끝날 때까지 살점 깎으며 춤춰야 한다.'}
+  },
+  bakjaegak: {
+    name:'박재각', meta:'41세 · 창귀회 오른팔 · 前正1品 · 187cm',
+    img: BASE + 'pjg.png',
+    appearance:'처진 황갈색 눈 / 짧은 갈색 머리 / 검은 티, 검은 자켓 / 거친 미남 / 다부진 근육질',
+    personality:'냉철, 비정한 현실주의, 충성 연기, 지략가, 야심. 속정 숨김.',
+    secret:'밀양박씨 서자 출신. 가문 내 멸시를 받았으며 본가 후계자 라인을 몰살하고 가문 비술을 훔쳐 흑화했다.',
+    quote:'"이 썩은 세상은 힘 있는 자가 지배해야 해. 기태연의 이상은 내가 완성한다."',
+    battle:{god:'이무기 (밀양박씨 비술)',weapon:'핏빛 검',skill:'식수(蝕水) — 닿는 모든 것을 부식시키는 검은 물',domain:'[흑룡의 둥지: 오염된 바다] — 사방 검은 부식액 바다. 입장 즉시 술식 차단, 육체 천천히 녹아내림.'}
+  },
+  seotaehyuk: {
+    name:'서태혁', meta:'24세 · 소속불명 수배범 · 살귀-인간 혼혈 · 특급 · 189cm',
+    img: BASE + 'sth.png',
+    appearance:'오드아이 (우측 적안, 좌측 녹안) / 덥수룩 잿빛 울프컷 / 피 묻은 구속복 바지, 붕대만 감은 상의 / 반쪽 얼굴 검은 문양 침식 / 맨발',
+    personality:'야수, 불안정, 편집증, 인간 증오, 애정결핍. 고개 갸웃 습관. 4대 흉맥 근처 숨어지냄.',
+    secret:'10년 전 인당수에 던져진 제물. 저주를 먹고 기어 나온 살아있는 재앙. 도화서 수배범.',
+    quote:'"심연은... 너무 추웠어. 당신들은 왜 날 거기 혼자 버려뒀지? 이제 당신들이 가라앉을 차례야."',
+    battle:{god:'없음 (원혼 자체)',weapon:'인당수의 쇠사슬 — 자신의 살을 뚫고 나오는 구속구',skill:'검은 진흙 (모든 것을 녹이는 맹독살)',domain:'[무저갱: 가라앉는 지옥] — 광화문 지하 인당수 늪 현실 복사. 검은 진흙 차오르며 적 이능력 상실, 늪에 가라앉아 원혼에게 녹음.'}
+  },
+  yeonho: {
+    name:'연호', meta:'나이불명 · 외형 12세 · 황학동 지하만물상 · 145cm / 38kg',
+    img: BASE + 'yh.png',
+    appearance:'황금색 눈 / 부스스 짧은 백발 / 오버핏 빈티지 야상, 반바지, 멜빵, 엽전 목걸이 / 소년 얼굴에 노인의 무심함',
+    personality:'염세, 츤데레. 인간을 비웃으면서도 은밀히 매료된다. 깊은 외로움.',
+    secret:'버려진 골동품들의 한이 모여 태어난 특급 사물(도깨비)의 화신. 자신이 만지는 인간은 저주받아 죽기에 스스로 고립된다.',
+    quote:'"규칙은 규칙이지. 물건 살 돈 없어? 그럼 네 수명이라도 저울에 달아보든가."',
+    battle:{god:'도깨비 (재물, 사물 조종)',weapon:'놋쇠 엽전',skill:'등가교환 — 무작위 특급 저주 물품 소환, 엽전 관통 탄환화',domain:'[만물상: 탐욕의 전당] — 거대 황금 저울 있는 무한 금고. 적의 죄악이 재산보다 무거우면 황금 동상으로 굳음.'}
+  },
+  chongsu: {
+    name:'소나무 (松)', meta:'십장생 총수 · 수령 불명',
+    img: BASE + 'tree.png',
+    appearance:'썩은 거대 소나무. 박힌 10개의 푸른 눈. 천 년의 한이 새겨진 존재.',
+    personality:'무언, 침묵, 음침. 말이 없다. 그 침묵이 더 무섭다.',
+    secret:'창귀회와 협력하여 서울을 제물로 삼아 나머지 십장생을 부활시키려는 흑막.',
+    quote:'침묵.',
+    battle:{god:'없음 (자연물 자체)',weapon:'뿌리 — 대지를 통해 저주 전파',skill:'천년한기 — 검은 기운으로 생명 흡수',domain:'미상'}
+  },
+  hae: {
+    name:'해 (日)', meta:'십장생 · 폭염 · 가뭄',
+    img: BASE + 'sun.png',
+    appearance:'붉게 달아오른 거구. 온몸이 타오르는 균열 피부. 파괴 그 자체.',
+    personality:'파괴적, 광기. 즐거움이 곧 파괴인 존재.',
+    secret:'인간의 탐욕과 환경 오염에 타락한 고대 태양 계열 요괴.',
+    quote:'"더워? 미쳐야지! 하하하!"',
+    battle:{god:'없음 (자연재해 자체)',weapon:'태양열',skill:'폭염 방출',domain:'미상'}
+  },
+  mul: {
+    name:'물 (水)', meta:'십장생 · 홍수 · 오염',
+    img: BASE + 'water.png',
+    appearance:'창백한 피부. 처절한 사내. 긴 머리칼(물). 오염된 검은 물로 이루어진 존재.',
+    personality:'허무. 춤추면 한강이 범람하고 도시가 수몰된다.',
+    secret:'인간의 환경 오염에 타락한 고대 수신 계열 요괴.',
+    quote:'"다... 씻어버리자."',
+    battle:{god:'없음 (자연재해 자체)',weapon:'오염된 홍수',skill:'한강 범람 — 도시 수몰',domain:'미상'}
+  },
+  san: {
+    name:'산 (山)', meta:'십장생 · 산사태',
+    img: BASE + 'mountain.png',
+    appearance:'거대 타락 바위 거인. 몸 곳곳에 아파트 잔해, 철근, 콘크리트가 박혀있다.',
+    personality:'무언, 우직. 인간 문명에 집착한다.',
+    secret:'인간의 탐욕과 개발로 파괴된 산들의 한이 응집해 태어난 존재.',
+    quote:'말이 없다.',
+    battle:{god:'없음 (자연재해 자체)',weapon:'바위 몸체 — 압사, 산사태',skill:'대지 진동',domain:'미상'}
+  }
+};
+
+function openModal(id) {
+  const d = charData[id];
+  if(!d) return;
+  document.getElementById('modalInner').innerHTML = `
+    <div class="modal-header">
+      <div class="modal-name">${d.name}</div>
+      <div class="modal-meta">${d.meta}</div>
+    </div>
+    ${d.img ? `<div class="modal-img-block"><img src="${d.img}" alt="${d.name}"></div>` : ''}
+    <div class="modal-body">
+      <div><p class="modal-section-title">외형 · APPEARANCE</p><p class="modal-text">${d.appearance}</p></div>
+      <div><p class="modal-section-title">성격 · PERSONALITY</p><p class="modal-text">${d.personality}</p></div>
+      <div class="modal-quote">${d.quote}</div>
+      <div><p class="modal-section-title">비밀 · SECRET</p><p class="modal-text">${d.secret}</p></div>
+      <div class="modal-battle">
+        <p class="modal-section-title">전투 · BATTLE</p>
+        <div class="modal-battle-item"><span class="modal-battle-label">수호신</span><span class="modal-battle-value">${d.battle.god}</span></div>
+        <div class="modal-battle-item"><span class="modal-battle-label">신구</span><span class="modal-battle-value">${d.battle.weapon}</span></div>
+        <div class="modal-battle-item"><span class="modal-battle-label">신술</span><span class="modal-battle-value">${d.battle.skill}</span></div>
+        <div class="modal-battle-item"><span class="modal-battle-label">신명개방</span><span class="modal-battle-value">${d.battle.domain}</span></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); document.body.style.overflow=''; }
+function closeModalOutside(e) { if(e.target===document.getElementById('modalOverlay')) closeModal(); }
+
+function switchFaction(id, btn) {
+  document.querySelectorAll('.faction-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.faction-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('faction-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function filterChar(faction, btn) {
+  document.querySelectorAll('.char-filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.char-card').forEach(card=>{
+    card.style.display=(faction==='all'||card.dataset.faction===faction)?'':'none';
+  });
+}
+
+function switchGallery(id, btn) {
+  document.querySelectorAll('.gallery-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.gallery-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('gallery-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function openLightbox(el) {
+  const img = el.querySelector('img');
+  if(!img) return;
+  document.getElementById('lightboxImg').src = img.src;
+  document.getElementById('lightbox').classList.add('active');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); }
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){closeModal();closeLightbox();} });
+</script>
+</body>
+</html>
