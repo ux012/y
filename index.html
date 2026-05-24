@@ -30,17 +30,17 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* FOG */
 #fog{position:fixed;inset:0;z-index:5000;pointer-events:none;}
-.fog-base{position:absolute;inset:0;background:#000;animation:fogBase 2.2s .6s ease-out forwards;animation-play-state:paused;}
+.fog-base{position:absolute;inset:0;background:#000;animation:fogBase 0.8s 0s ease-out forwards;animation-play-state:paused;}
 @keyframes fogBase{to{opacity:0}}
 .fw{position:absolute;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(8,5,3,.96) 0%,rgba(5,3,1,.6) 42%,transparent 72%);animation:fogWisp var(--d) var(--dl) ease-out forwards;animation-play-state:paused;}
 @keyframes fogWisp{0%{transform:translate(0,0) scale(1);opacity:.92}100%{transform:translate(var(--tx),var(--ty)) scale(2.3);opacity:0}}
 
 /* INTRO TEXT */
-#introText{position:fixed;inset:0;z-index:8000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;animation:itOut .9s 5.2s ease-out forwards;}
+#introText{position:fixed;inset:0;z-index:8000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;animation:itOut .9s 2.0s ease-out forwards;}
 @keyframes itOut{to{opacity:0;}}
 #itLines{display:flex;flex-direction:column;align-items:center;gap:2rem;padding:0 2rem;text-align:center;}
 .it-line{display:flex;justify-content:center;flex-wrap:wrap;}
-.it-char{opacity:0;display:inline-block;animation:charIn .65s ease-out forwards;font-size:clamp(1.1rem,2.2vw,1.65rem);color:var(--text);letter-spacing:.05em;font-family:'Noto Serif KR',serif;}
+.it-char{opacity:0;display:inline-block;animation:charIn .25s ease-out forwards;font-size:clamp(1.1rem,2.2vw,1.65rem);color:var(--text);letter-spacing:.05em;font-family:'Noto Serif KR',serif;}
 .it-char.sp{color:var(--red-b);text-shadow:0 0 18px rgba(192,57,43,.7);}
 @keyframes charIn{0%{opacity:0;transform:translateY(12px);filter:blur(5px);}65%{opacity:1;transform:translateY(-2px);filter:blur(0);}100%{opacity:1;transform:translateY(0);}}
 
@@ -164,7 +164,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 /* INK BUTTON */
 #inkBtn{position:fixed;bottom:2rem;left:2rem;z-index:500;cursor:pointer;opacity:0;transform:scale(0) rotate(-15deg);transition:opacity .6s,transform .7s cubic-bezier(.34,1.56,.64,1);user-select:none;}
 #inkBtn.show{opacity:1;transform:scale(1) rotate(0deg);}
-#inkBtn svg{width:120px;height:130px;transition:filter .3s;}
+#inkBtn svg{width:70px;height:76px;transition:filter .3s;}
 #inkBtn.show svg{animation:inkPulse 3s ease-in-out infinite;}
 #inkBtn:hover svg{animation:none;filter:drop-shadow(0 0 20px rgba(201,168,76,.5))!important;}
 @keyframes inkPulse{0%,100%{filter:drop-shadow(0 3px 18px rgba(0,0,0,.9)) drop-shadow(0 0 8px rgba(201,168,76,.1))}50%{filter:drop-shadow(0 3px 18px rgba(0,0,0,.9)) drop-shadow(0 0 22px rgba(201,168,76,.4))}}
@@ -296,7 +296,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   .ftabs{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   #skipBtn{right:1rem;bottom:1.8rem;font-size:.55rem;}
   #inkBtn{bottom:1.2rem;left:1rem;}
-  #inkBtn svg{width:95px;height:103px;}
+  #inkBtn svg{width:55px;height:60px;}
   #musicBar{bottom:4.5rem;}
   .cgrid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
   .modal{margin:.8rem;}
@@ -781,7 +781,7 @@ let wheelLocked = false;
       const span = document.createElement('span');
       span.className = 'it-char' + (special.has(ch) ? ' sp' : '');
       span.textContent = ch === ' ' ? ' ' : ch;
-      span.style.animationDelay = Math.round((idx / total) * 4400) + 'ms';
+      span.style.animationDelay = Math.round((idx / total) * 1500) + 'ms';
       div.appendChild(span);
       idx++;
     }
@@ -790,12 +790,12 @@ let wheelLocked = false;
 })();
 
 // introText가 완전히 사라진 후 display:none
-setTimeout(() => { document.getElementById('introText').style.display = 'none'; }, 6200);
+setTimeout(() => { document.getElementById('introText').style.display = 'none'; }, 3000);
 
 // 셀렉트 스크린 등장 (introText 완전히 사라진 직후)
 setTimeout(() => {
   document.getElementById('selectScreen').classList.add('show');
-}, 6300);
+}, 3100);
 
 // 선택 후 안개 + 메인 화면 진입
 function onSelect() {
@@ -817,7 +817,7 @@ function onSelect() {
     }).catch(() => {
       mstatus.textContent = '클릭하여 재생';
     });
-  }, 3200);
+  }, 900);
 }
 
 // ── 피 뿌리기 ──
