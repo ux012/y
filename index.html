@@ -320,6 +320,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <button class="nav-link" onclick="goToSection(5)">등장인물</button>
     <span class="nav-sep">·</span>
     <button class="nav-link" onclick="goToSection(6)">갤러리</button>
+    <span class="nav-sep">·</span>
+    <button class="nav-link" onclick="goToSection(7)">신분증</button>
     <button class="nav-ham" onclick="document.getElementById('navMob').classList.add('open')">☰</button>
   </div>
 </nav>
@@ -709,6 +711,63 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
   </div>
 </div>
+<!-- SECTION 7: 신술사 신분증 생성기 -->
+<div class="panel" id="s7">
+  <div class="shdr">
+    <p class="slabel">RANDOM · 신술사</p>
+    <h2 class="stitle">신술사 신분증 발급</h2>
+    <div class="sdiv"></div>
+    <p style="color:var(--text-dim);font-size:.85rem;font-family:'Noto Sans KR',sans-serif;max-width:540px;margin:0 auto;line-height:2.2;">도화서가 당신의 신기(神氣)를 감지했다.<br>아래 버튼으로 신분을 확인하라.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:2rem;">
+    <button id="genBtn" onclick="generateCard()" style="background:none;border:1px solid rgba(139,26,26,.6);color:var(--gold);font-family:'Noto Serif KR',serif;font-size:1rem;letter-spacing:.35em;padding:.85rem 2.8rem;cursor:pointer;transition:all .3s;">신분 판정</button>
+    <div id="idCard" style="display:none;width:min(480px,92vw);background:linear-gradient(155deg,rgba(26,20,16,.98),rgba(10,8,5,.99));border:1px solid rgba(201,168,76,.35);padding:2.2rem 2rem 2rem;position:relative;animation:mIn .4s ease;">
+      <div style="position:absolute;top:1rem;right:1.4rem;font-size:3.8rem;color:rgba(139,26,26,.08);font-weight:900;pointer-events:none;user-select:none;line-height:1;">제살국</div>
+      <div style="text-align:center;margin-bottom:1.6rem;border-bottom:1px solid rgba(201,168,76,.18);padding-bottom:1.2rem;">
+        <div style="font-size:.58rem;letter-spacing:.5em;color:var(--gold-dim);font-family:'Noto Sans KR',sans-serif;margin-bottom:.4rem;">JESALGUK · 제살국</div>
+        <div style="font-size:1.05rem;font-weight:700;color:var(--gold);letter-spacing:.2em;">신술사 신분증</div>
+        <div style="font-size:.6rem;color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;margin-top:.25rem;">神術師 身分證</div>
+      </div>
+      <div style="text-align:center;margin-bottom:1.5rem;">
+        <span id="rankBadge" style="display:inline-block;padding:.35rem 1.4rem;border:1px solid var(--red-b);color:var(--red-b);font-size:.75rem;letter-spacing:.25em;font-family:'Noto Sans KR',sans-serif;"></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <span style="color:var(--gold-dim);font-size:.66rem;letter-spacing:.12em;min-width:70px;flex-shrink:0;font-family:'Noto Sans KR',sans-serif;padding-top:.15rem;">소속</span>
+          <span id="iOrg" style="color:var(--text);font-size:.84rem;line-height:1.75;font-family:'Noto Sans KR',sans-serif;"></span>
+        </div>
+        <div style="height:1px;background:rgba(201,168,76,.1);"></div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <span style="color:var(--gold-dim);font-size:.66rem;letter-spacing:.12em;min-width:70px;flex-shrink:0;font-family:'Noto Sans KR',sans-serif;padding-top:.15rem;">수호신</span>
+          <span id="iGod" style="color:var(--text);font-size:.84rem;line-height:1.75;font-family:'Noto Sans KR',sans-serif;"></span>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <span style="color:var(--gold-dim);font-size:.66rem;letter-spacing:.12em;min-width:70px;flex-shrink:0;font-family:'Noto Sans KR',sans-serif;padding-top:.15rem;">신구 神具</span>
+          <span id="iWeapon" style="color:var(--text);font-size:.84rem;line-height:1.75;font-family:'Noto Sans KR',sans-serif;"></span>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;">
+          <span style="color:var(--gold-dim);font-size:.66rem;letter-spacing:.12em;min-width:70px;flex-shrink:0;font-family:'Noto Sans KR',sans-serif;padding-top:.15rem;">신술 神術</span>
+          <span id="iSkill" style="color:var(--text);font-size:.84rem;line-height:1.75;font-family:'Noto Sans KR',sans-serif;"></span>
+        </div>
+        <div style="border-top:1px solid rgba(201,168,76,.18);padding-top:1rem;">
+          <div style="display:flex;gap:1rem;align-items:flex-start;">
+            <span style="color:var(--red-b);font-size:.66rem;letter-spacing:.12em;min-width:70px;flex-shrink:0;font-family:'Noto Sans KR',sans-serif;padding-top:.15rem;">신명개방</span>
+            <span id="iDomain" style="color:rgba(192,57,43,.9);font-size:.82rem;line-height:1.8;font-family:'Noto Sans KR',sans-serif;"></span>
+          </div>
+        </div>
+        <div style="border-top:1px solid rgba(201,168,76,.12);padding-top:.9rem;">
+          <div style="font-size:.62rem;letter-spacing:.2em;color:var(--gold-dim);font-family:'Noto Sans KR',sans-serif;margin-bottom:.65rem;">특 성</div>
+          <div id="iTags" style="display:flex;flex-wrap:wrap;gap:.4rem;"></div>
+        </div>
+      </div>
+      <div style="margin-top:1.8rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,.12);display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:.58rem;color:rgba(201,168,76,.28);font-family:'Noto Sans KR',sans-serif;">도화서 중앙본부 발급</div>
+        <div id="iSerial" style="font-size:.58rem;color:rgba(201,168,76,.22);letter-spacing:.12em;font-family:'Noto Sans KR',sans-serif;"></div>
+      </div>
+    </div>
+    <button id="regenBtn" onclick="generateCard()" style="display:none;background:none;border:1px solid rgba(201,168,76,.22);color:var(--text-dim);font-family:'Noto Sans KR',sans-serif;font-size:.7rem;letter-spacing:.3em;padding:.5rem 1.6rem;cursor:pointer;">다시 뽑기</button>
+  </div>
+</div>
 
 <!-- BLOOD SPLATTER -->
 <div id="splatter"></div>
@@ -761,8 +820,8 @@ const mstatus = document.getElementById('mstatus');
 const btnChar = document.getElementById('btnChar');
 const btnProg = document.getElementById('btnProg');
 
-const PANELS = ['s1','s2','s3','s4','s5','s6'];
-const PROG = ['1 / 6','2 / 6','3 / 6','4 / 6','5 / 6','6 / 6'];
+const PANELS = ['s1','s2','s3','s4','s5','s6','s7'];
+const PROG = ['1 / 7','2 / 7','3 / 7','4 / 7','5 / 7','6 / 7','7 / 7'];
 let cur = 0;
 let gameStarted = false;
 let wheelLocked = false;
@@ -1099,6 +1158,40 @@ function openLb(el) {
   document.getElementById('lbImg').alt = img.alt;
   document.getElementById('lbCaption').textContent = lbl ? lbl.textContent.trim() : '';
   document.getElementById('lightbox').classList.add('on');
+}
+
+const RANKS=[{r:'특무관 (特務官)',w:1,c:'#c9a84c'},{r:'정1품 (正一品)',w:3,c:'#c0392b'},{r:'종1품 (從一品)',w:6,c:'#c0392b'},{r:'정2품 (正二品)',w:10,c:'#d4c4a0'},{r:'종2품 (從二品)',w:13,c:'#d4c4a0'},{r:'3품 (三品)',w:18,c:'#8a7a5e'},{r:'4품 (四品)',w:20,c:'#8a7a5e'},{r:'5~9품 (하급)',w:29,c:'#5a4a3e'}];
+const ORGS=['도화서 (서울 중앙본부) — 정규직','도화서 (서울 중앙본부) — 수습직','해동청 (부산 지부) — 현장대원','해동청 (부산 지부) — 기동타격대','도화서·해동청 공동 파견팀','제살국 직속 기밀부대 — 흑색국','무소속 (야인 신술사)','황학동 지하만물상 소속 — 중립 구역 연계','3대 신가 직속 — 풍산류씨 가문 소속','3대 신가 직속 — 밀양박씨 가문 소속','3대 신가 직속 — 무령신씨 가문 소속'];
+const GODS=['태을진인 (벼락·심판·천계 소환)','칠성신 (별·운명·예언)','삼신할미 (생사·탄생·저주역전)','도깨비왕 (혼돈·재물·반전)','변강쇠 (목·뿌리·대지 고정)','장승 (경계·결계·진입 금지)','업신 (행운·저주·인과응보)','바람신 풍백 (폭풍·음속이동·기압파괴)','비신 우사 (산성비·부식·시야차단)','구름신 운사 (안개·은신·전장지배)','오방신장 — 청룡장군 (동방·목기·기합)','오방신장 — 백호장군 (서방·금기·절단)','오방신장 — 현무장군 (북방·수기·봉인)','오방신장 — 주작장군 (남방·화기·소각)','오방신장 — 황룡장군 (중앙·토기·압쇄)','나찰 (공포·환각·정신붕괴)','야광귀 (어둠·투명화·야간지배)','독각귀 (독·오염·내부붕괴)','두억시니 (괴력·충격·방어무시)','망량 (모방·형태변환·정체혼란)','달걀귀신 (기억흡수·과거재현·정체성붕괴)','뱀신 (탈피·재생·독침)','두꺼비신 (흡수·반사·저주 되돌리기)','황소귀신 (돌진·충격파·지진)','호랑이신 (포식·위압·공포지배)'];
+const WEAPONS=['피 묻은 무당 방울 셋 — 흔들면 결계 전개, 세게 흔들면 진동파','녹슨 제례용 대도 — 베인 상처에서 검은 연기 분출','부러진 화살 열두 개 — 공중에서 저절로 날아 표적 추적','뼈로 만든 피리 — 소리가 닿은 곳의 혼백 강제 소환','진흙으로 빚은 인형 — 대상의 이름 새기면 행동 조종','가시 돋힌 홍실 뭉치 — 풀릴수록 반경 넓어지는 결계','불에 탄 제사상 — 올린 음식이 저주 폭탄으로 변환','물에 젖은 백지 부적 — 붙이면 대상 일시 봉인','부러진 솟대 — 꼭대기 새가 정찰하며 적 위치 전송','옻칠된 검은 목관 — 열면 주변 공간 일시 흡수','금줄 타래 — 쳐놓은 선 넘으면 자동 결계 발동','뒤집어쓴 소댕 — 투명화 발동, 움직이면 해제','상여꾼 패랭이 — 쓰면 저승 반투명 상태로 이동','핏자국 남은 제복 — 입으면 피격 시 즉시 반격 발동','깨진 점술 거울 — 조각 각각이 독립 감지 센서','세 갈래 촛대 — 세 방향 동시 화염 기둥 발사','뒤집어진 절구 — 안에 갇힌 적은 압쇄되며 공간 압축','반쯤 탄 제사 종이 — 태울수록 결계 범위 확장','해골 모양 향로 — 연기 속 원혼이 적 혼백 잡아당김','기울어진 사찰 범종 — 한 번 치면 반경 내 이능력 일시 정지'];
+const SKILLS=['사혼(蛇魂)침 — 피부 뚫고 들어가 내부에서 장기 조종','석화(石化)기 — 호흡 한 번에 반경 내 살귀 일시 석화','음충(陰蟲) 방사 — 보이지 않는 벌레 떼가 대상 살 파고들기','공명살(共鳴煞) — 자신의 상처를 적에게 전이','역귀림(逆鬼臨) — 주변 살귀를 잠시 아군으로 반전','혼절법(魂切法) — 육체와 영혼을 일시 분리해 피격 회피','진공나선(眞空螺旋) — 대기를 비틀어 원거리 진공 폭압','연옥화(鍊獄火) — 살에 새긴 화인이 불꽃으로 폭발','굴신술(屈身術) — 그림자 속으로 이동·잠복','황천수(黃泉水) — 손에서 황천의 물이 흘러 닿은 것 부패','빙의각(憑依殼) — 빈 살귀 껍데기에 일시 들어가 위장','저주회로(詛呪回路) — 신술 맞은 적끼리 데미지 공유','역천추(逆天錐) — 중력 반전, 모든 것이 하늘로 쏠림','영역침식(領域侵蝕) — 상대 신명개방 안으로 강제 침투','천라지망(天羅地網) — 하늘과 땅 사이 보이지 않는 그물 전개','사시(死視) — 적의 잔여 수명을 수치로 보는 눈','진혼박(鎭魂縛) — 자신 목소리로 원혼을 즉시 정박','귀화(鬼火)폭 — 손바닥에서 냉기 도깨비불 동시 다발 발사','결계천공(結界穿孔) — 상대 결계에 구멍 뚫어 내부 침투','시공균열(時空龜裂) — 공간에 금 그어 통과하는 모든 것 절단'];
+const DOMAINS=['「사백(死白): 하얀 무덤」 사방이 백지로 덮인 납골당. 이름 쓰인 것들이 모두 적에게 날아들어 찌른다.','「진혼무(鎭魂舞): 꼭두각시의 마당」 거대한 무대. 입장한 적은 자기 의지와 반대되는 동작을 강제로 수행한다.','「혈우(血雨): 핏비 내리는 하늘」 붉은 하늘에서 끊임없이 핏비. 맞을수록 신기 소모가 역방향으로 증폭된다.','「빙옥(氷獄): 얼어붙은 황천」 영하 극한의 공간. 움직임이 느려지다 결국 완전히 동결, 의식만 남아 공포 체험.','「환도(幻道): 백 개의 문」 열릴 것 같은 문들이 늘어선 복도. 어느 문을 열어도 같은 공간으로 돌아온다.','「귀시(鬼市): 새벽 귀신 시장」 자정 직전의 조선 시장. 물건마다 저주가 붙어 있고 값은 목숨으로만 치른다.','「연옥(煉獄): 타오르는 기억」 과거 트라우마가 불꽃으로 재현되는 공간. 불꽃은 실제 데미지를 입힌다.','「침묵(沈默): 소리 없는 땅」 모든 소리가 사라진 공간. 술식 시전에 음성이 필요한 능력 전부 봉인.','「천라(天羅): 뒤집힌 하늘」 하늘과 땅이 뒤집힌 공간. 본래 위치 감각이 붕괴되어 방향 지정 술식 전부 오발.','「업화(業火): 죄의 불바다」 자신이 저지른 죄악이 불꽃으로 쏟아지는 공간. 죄가 클수록 화염이 강해진다.','「수라(修羅): 끝나지 않는 싸움」 모든 공격이 무한 반복되는 전장. 적은 이미 죽인 적수들과 영원히 싸워야 한다.','「흑사(黑絲): 보이지 않는 실의 숲」 수억 가닥 투명한 실이 공간을 채움. 움직일수록 몸이 잘려나간다.','「귀문(鬼門): 열린 저승문」 저승문이 활짝 열린 경계. 죽은 자들이 쏟아져 나오며 적의 몸에 빙의를 시도한다.','「허공(虛空): 아무것도 없는 곳」 완전한 허공. 발을 디딜 곳도 잡을 것도 없어 심리적 공황이 급속도로 온다.','「독무(毒霧): 보랏빛 안개」 짙은 보랏빛 독안개. 흡입 시 신기 흡수 능력 역전, 자신의 신기가 밖으로 새어나간다.','「암흑(暗黑): 빛 없는 세계」 완전한 암흑. 촉각을 제외한 모든 감각이 차단되며 환청이 시작된다.','「조화(造化): 살아있는 정원」 꽃과 나무로 가득한 공간. 아름다울수록 독하며 꽃가루 한 번에 마비.','「붕괴(崩壞): 무너지는 세계」 공간 자체가 조각조각 붕괴중. 발 딛는 곳이 사라지기 전에 이동해야 한다.','「역류(逆流): 거꾸로 흐르는 강」 시간이 거꾸로 흐르는 강변. 입장 시점부터 입은 상처가 역재생되어 더 깊어진다.','「오체(五體): 다섯 개의 나」 자신의 복제 다섯이 적을 에워싸는 공간. 진짜를 찾기 전까지 탈출 불가.'];
+const TRAITS=['나태','염세주의','만성피로','츤데레','얼음장','오만','야망','순애보','사디스트','사냥개','퇴폐미','가식적 비정함','마초','의리파','직진남','열혈','반항아','반골','속정 깊음','위선적 다정함','나른한 광기','냉철','지략가','야심가','외로움','완벽주의','폭발형','독불장군','과묵함','예의바름','잔혹함','보호본능','집착형','독창적','충동적','신중함','카리스마','허무주의','자기혐오','비련형','다중인격 의심','피해망상','결벽증','수집광','불면증','선민의식','자기파괴 충동','의존형','냉소적 낭만주의','관찰자형'];
+function _pick(a){return a[Math.floor(Math.random()*a.length)];}
+function _pickW(a){const t=a.reduce((s,x)=>s+x.w,0);let r=Math.random()*t;for(const x of a){r-=x.w;if(r<=0)return x;}return a[a.length-1];}
+function _pickN(a,n){const c=[...a],res=[];for(let i=0;i<n&&c.length;i++){const idx=Math.floor(Math.random()*c.length);res.push(c.splice(idx,1)[0]);}return res;}
+function generateCard(){
+  const card=document.getElementById('idCard');
+  const regenBtn=document.getElementById('regenBtn');
+  const genBtn=document.getElementById('genBtn');
+  const ro=_pickW(RANKS);
+  const tags=_pickN(TRAITS,3+Math.floor(Math.random()*3));
+  const serial='JSG-'+String(Math.floor(Math.random()*90000)+10000);
+  document.getElementById('rankBadge').textContent=ro.r;
+  document.getElementById('rankBadge').style.borderColor=ro.c;
+  document.getElementById('rankBadge').style.color=ro.c;
+  document.getElementById('iOrg').textContent=_pick(ORGS);
+  document.getElementById('iGod').textContent=_pick(GODS);
+  document.getElementById('iWeapon').textContent=_pick(WEAPONS);
+  document.getElementById('iSkill').textContent=_pick(SKILLS);
+  document.getElementById('iDomain').textContent=_pick(DOMAINS);
+  document.getElementById('iSerial').textContent=serial;
+  const tagsEl=document.getElementById('iTags');
+  tagsEl.innerHTML='';
+  tags.forEach(t=>{const s=document.createElement('span');s.className='ftag';s.textContent=t;tagsEl.appendChild(s);});
+  card.style.display='block';
+  regenBtn.style.display='inline-block';
+  genBtn.style.display='none';
 }
 
 function closeLb(e) {
